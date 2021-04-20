@@ -11,19 +11,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-import os
-import sys
-import cx_Oracle as cx
-
-# try:
-#     if sys.platform.startswith("linux"):
-#         lib_dir = '/workspaces/ccn_ibict/instantclient_21_1'
-#         cx.init_oracle_client(lib_dir=lib_dir)
-
-# except Exception as err:
-#     print("Whoops!")
-#     print(err)
-#     sys.exit(1)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')e267pj8-7iz*7bt1xu&!q1izl5$qhmzgv6d)s!ez))h_dsy!('
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -93,10 +80,10 @@ DATABASES = {
         'NAME': '/workspaces/ccn_ibict/db.sqlite3',
     },
     'primary': {
-        'ENGINE': 'django.db.backends.oracle',
-        'NAME': '12.0.0.221:1521/PROLIMDELL1',
-        'USER': 'uccn_sel',
-        'PASSWORD': 'TE3aJK44JBJQ'
+        'ENGINE': '',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': ''
     },
 }
 
