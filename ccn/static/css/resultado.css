@@ -1,0 +1,46 @@
+header div{
+    background-color: rgb(4, 100, 164);
+    margin-bottom: 10px;
+}
+
+header .row{
+    justify-content: center;
+}
+
+header p{
+    color: white;
+    margin-bottom: 0px;
+}
+
+.linhaTabela p{
+    color: white;
+    margin-bottom: 0px;
+    background-color: rgb(4, 100, 164);
+    text-align: center;
+}
+
+.btnVoltar{
+    justify-content: center;
+}
+
+tbody th {
+    background-color: rgb(165, 185, 224);
+    width: 15% !important;
+}
+
+.linhaTabela tbody td {
+    background-color: #d8e1f0;
+    width: 85% !important;
+}
+
+.table-bordered td, .table-bordered th {
+    border-color: white !important;
+}
+
+#des{
+    font-weight: bolder;
+}
+
+#sigla {
+    text-decoration: underline;
+}

@@ -1,2 +1,4 @@
 .devcontainer
 venv
+instantclient_21_1
+ccn_ibict/__pycache__/*

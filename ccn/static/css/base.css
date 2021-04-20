@@ -1,0 +1,12 @@
+header div{
+    background-color: rgb(4, 100, 164);
+}
+
+header .row{
+    justify-content: center;
+}
+
+header p{
+    color: white;
+    margin-bottom: 0px;
+}

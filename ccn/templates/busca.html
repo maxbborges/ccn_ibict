@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block link %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/busca.css' %}">
+{% endblock %}
+
+{% block header %}
+<div class='row linhaColabore'>
+    <p>Colabore</p>
+</div>
+{% endblock %}
+
+{% block main %}
+<div class='row'>
+    <div class="col">
+        <select class="input-group-text selectpicker" id='qtdItens'>
+            {% for item in itens %}
+                {% if item == request.session.qtdItens %}
+                    <option selected>{{item}}</option>
+                {% else %}
+                    <option>{{item}}</option>
+                {% endif %}
+            
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col">
+        <nav aria-label="Page navigation">
+            {% include 'paginador.html' with pname=a page_obj=postagens %}
+        </nav>
+    </div>
+</div>
+<form method="POST" class="post-form" action='/resultado'>
+    {% csrf_token %}
+    <div class="row">
+        <div class="col">
+            <table class="table .table-striped">
+                <tbody>
+                    {% if postagens %}
+                    {% for postagem in postagens %}
+                    <tr>
+                        <td><input type="checkbox" name={{postagem.codigo}}>
+                            <!-- {{ forloop.counter }} - {{postagem.titulo_completo}} -->
+                            {{ postagem.codigo }} - {{postagem.titulo_completo}}
+                        </td>
+                    <tr>
+                        {% endfor %}
+                        {% else %}
+                            Nenhum item encontrado!
+                        {% endif %}
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <select class="input-group-text selectpicker" name='formatoConsulta'>
+                <option title="Combo 1" selected>Detalhado</option>
+                <option title="Combo 2">Completo</option>
+                <option title="Combo 3">Simples</option>
+            </select>
+        </div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary visualizarRegistros">Visualizar Registros</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-primary novaConsulta">Nova Consulta</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/busca.js' %}"></script>
+{% endblock %}

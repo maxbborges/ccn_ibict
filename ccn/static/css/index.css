@@ -1,0 +1,31 @@
+.camposDeBusca {
+    margin-top: 10px;
+}
+
+.camposDeBusca .row {
+    justify-content: center;
+}
+
+.camposDeBusca p{
+    margin-bottom: 0px;
+}
+
+.botoesConsulta .col {
+    text-align: center;
+}
+
+.botoesConsulta, .linhaColabore {
+    margin-bottom: 10px;
+}
+
+.tabelaResultado{
+    visibility: hidden;
+}
+
+.spanRemover {
+    margin: 0 5px 0 5px;
+}
+
+.tabelaResultado .col{
+    text-align: center;
+}

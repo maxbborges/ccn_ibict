@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block link %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/resultado.css' %}">
+{% endblock %}
+
+{% block header %}
+<div class='row'>
+    <p>Consulta ao CCN</p>
+</div>
+{% endblock %}
+
+{% block main %}
+<div class='row linhaTabela'>
+    <div class='col'>
+        {% if lista_postagens %}
+        {% for postagem  in lista_postagens %}
+        <table class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                        <p>consulta: {{postagem.0.codigo}}</p>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th style="width: 15%">CCN</th>
+                    <td style="width: 85%">{{postagem.0.cod_ccn}}</td>
+                </tr>
+                <tr>
+                    <th style="width: 15%">Titulo</th>
+                    {% if postagem.0.home_page %}
+                    <td style="width: 85%"><a href={{postagem.0.home_page}}>{{postagem.0.titulo_completo}}</a></td>
+                    {% else %}
+                    <td style="width: 85%">{{postagem.0.titulo_completo}}</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <th style="width: 15%">Área de Numeração</th>
+                    <td style="width: 85%">{{postagem.0.designacao}}</td>
+                </tr>
+                <tr>
+                    <th style="width: 15%">Imprenta</th>
+                    <td style="width: 85%">{{postagem.0.des}},{{postagem.0.uf_cod}}: {{postagem.0.nome}}</td>
+                </tr>
+                {%if lista_assuntos%}
+                    <tr>
+                        <th style="width: 15%">Assunto</th>
+                        <td style="width: 85%">
+                            {%for assunto in lista_assuntos%}
+                                {% if assunto.0.cod == postagem.0.codigo %}
+                                    {{assunto.0.assunto}}
+                                {%endif%}
+                            {%endfor%}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="width: 15%">Frequência</th>
+                        <td style="width: 85%">{{postagem.0.frequencia}}</td>
+                    </tr> 
+                {%endif%}
+                {%if lista_universidades%}
+                    <tr>
+                        <th style="width: 15%">Coleção</th>
+                        <td style="width: 85%">
+                        {%for universidade in lista_universidades%}
+                            {%if universidade.0.publ_cod == postagem.0.codigo %}
+                                {%for r in universidade %}
+                                    <div><span id='sigla'>{{r.sigla}}</span><span id='des'> ({{r.uf_cod}})</span>: {{r.conteudo}}</div>
+                                {%endfor%}
+                            {%endif%}
+                        {%endfor%}
+                        </td>
+                    </tr>
+                {%endif%}
+            </tbody>
+        </table>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="row btnVoltar">
+    <button type="button" class="btn btn-primary btnRetornar">Retornar</button>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/resultado.js' %}"></script>
+{% endblock %}

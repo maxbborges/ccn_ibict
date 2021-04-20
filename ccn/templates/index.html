@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block link %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+{% endblock %}
+
+
+{% block header %}
+
+<div class='row'>
+    <p>Consulta ao CCN</p>
+</div>
+
+{% endblock %}
+
+{% block main %}
+<form method="POST" class="post-form" action="/busca?page=1" id='formBusca'>
+    {% csrf_token %}
+    <div class='camposDeBusca'>
+        <div class="row">
+            <div class="col campoDeBusca">
+                <div class="row">
+                    <p>Clique nas opções abaixo</p>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-2 mt-2">
+                            <div class="input-group mb-3">
+                                <span>
+                                    <select class="input-group-text selectpicker slc-chave-tipo" name='tipo'>
+                                        {% if campos %}
+                                        {% for key,value in campos.items %}
+                                        <option value='{{value}}'>{{key}}</option>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </span>
+                                <input type="text" class="input-group form-control ipt-valor"
+                                    aria-label="Text input with dropdown button" name='valor' required>
+                                <span>
+                                    <select class="input-group-text selectpicker slc-chave-juncao" name='juncao'>
+                                        <option selected>and</option>
+                                        <option>or</option>
+                                        <option>not</option>
+                                    </select>
+                                </span>
+                                <span class='spanRemover'>
+                                    <button type="button" class="btn btn-primary btnRemover"
+                                        onclick="removerDiv($(this))">-</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="append">
+                </div>
+            </div>
+        </div>
+        <div class="row addCampos">
+            <button type="button" class="btn btn-primary mb-2 mt-2" id="adicionarCamposDeBusca">+</button>
+        </div>
+    </div>
+    <div class="row botoesConsulta">
+        <div class="col"><button type="submit" class="btn btn-primary" id='executarBusca'>Executar Consulta</button></div>
+        <!-- <div class="col"><button type="button" class="btn btn-primary">Visualizar Consulta</button></div> -->
+        <div class="col"><button type="button" class="btn btn-primary limparFormulario">Limpar Formulario</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+
+{% block footer %}
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'js/index.js' %}"></script>
+{% endblock %}

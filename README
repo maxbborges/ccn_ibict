@@ -1,10 +1,14 @@
-sudo apt-get install python3
-sudo apt-get install python3-venv
-sudo apt-get install libaio1
+sudo apt-get install python3 python3-venv libaio1
+
 python3 -m venv venv
 source venv/bin/activate
 sudo apt-get install python3-pip
-pip install django
-pip install cx_oracle
+pip install django cx_oracle glibc
+
 django-admin startproject ccn_ibict
+python3 manage.py startapp ccn
+LD_LIBRARY_PATH=/workspaces/ccn_ibict/instantclient_21_1/
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/workspaces/ccn_ibict/instantclient_21_1/libnnz21.so:/workspaces/ccn_ibict/instantclient_21_1/libclntsh.so
+export LD_LIBRARY_PATH
+
 python3 manage.py runserver

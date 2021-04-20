@@ -11,6 +11,19 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import sys
+import cx_Oracle as cx
+
+# try:
+#     if sys.platform.startswith("linux"):
+#         lib_dir = '/workspaces/ccn_ibict/instantclient_21_1'
+#         cx.init_oracle_client(lib_dir=lib_dir)
+
+# except Exception as err:
+#     print("Whoops!")
+#     print(err)
+#     sys.exit(1)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ccn',
 ]
 
 MIDDLEWARE = [
@@ -76,8 +90,14 @@ WSGI_APPLICATION = 'ccn_ibict.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'NAME': '/workspaces/ccn_ibict/db.sqlite3',
+    },
+    'primary': {
+        'ENGINE': 'django.db.backends.oracle',
+        'NAME': '12.0.0.221:1521/PROLIMDELL1',
+        'USER': 'uccn_sel',
+        'PASSWORD': 'TE3aJK44JBJQ'
+    },
 }
 
 
