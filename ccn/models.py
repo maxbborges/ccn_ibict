@@ -50,14 +50,20 @@ class Postagens(models.Model):
            	END AS situacao,
             pt.TITULO_COMPLETO, 
             pd.DESIGNACAO, 
-            e.NOME, l.DES , 
-            l.UF_COD
+            e.NOME, 
+            l.DES, 
+            l.UF_COD,
+            p2.DES AS pais,
+            i.DES AS idioma
         FROM ccn.publicacao p, 
             ccn.PUBLICACAO_TITULO pt , 
             ccn.PUBLICACAO_DESIGNACAO pd,
             ccn.PUBLICACAO_IMPRENTA pub_i, 
             ccn.EDITORA e , 
-            ccn.LOCALIDADE l
+            ccn.LOCALIDADE l,
+            ccn.PAIS p2,
+            ccn.PUBLICACAO_IDIOMA pi2,
+            ccn.IDIOMA i 
         WHERE
             pt.PUBL_COD=p.COD 
             AND TITULO_COMPLETO IS NOT NULL 
@@ -65,6 +71,9 @@ class Postagens(models.Model):
             AND pub_i.PUBL_COD = p.COD 
             AND e.COD = pub_i.EDTO_COD 
             AND l.COD = pub_i.MUNI_COD
+            AND p2.COD = p.PAI_COD
+            AND p.COD = pi2.PUBL_COD
+            AND pi2.IDIO_COD = i.COD
             AND'''
         
         for i,k1 in enumerate(valor):

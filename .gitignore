@@ -2,3 +2,5 @@
 venv
 instantclient_21_1
 ccn_ibict/__pycache__/*
+ccn/__pycache__/*
+ccn_ibict/env.py

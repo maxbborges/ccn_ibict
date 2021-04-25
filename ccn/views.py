@@ -14,13 +14,13 @@ def index(request):
     camposConsulta ={
        'Titulo':'tituloproprio',
     #    'Assunto':'a',
-    #    'Pais de publicação':'p2.des',
-    #    'Idioma do Texto':'a',
+       'Pais de publicação':'p2.des',
+       'Idioma do Texto':'i.des',
        'Código CCN':'COD_CCN',
        'Número ISSN':'COD_ISSN',
        'Situação de publicação':'SIT_PUBL',
-    #    'Local de Edição/Publicação':'a',
-    #    'Editor/Publicador':'a',
+       'Local de Edição/Publicação':'l.des',
+       'Editor/Publicador':'e.nome',
        'Titulo Abreviado':'TITULO_ABREVIADO'
     }
     return render(request,'index.html',{'campos':camposConsulta})
