@@ -1,6 +1,15 @@
+console.log($('.append'))
 $('#adicionarCamposDeBusca').click(function(){
     quantidade = $('.slc-chave-tipo').length
-    $($('.campoDeBusca')[0].children[1]).clone().prependTo('.append');
+    fieldToClone = $('.campoDeBusca')[0].children[1]
+    
+    if ($('.append')[0].children.length==0){
+        lastField=$(fieldToClone).clone().prependTo('.append');
+        (lastField.find('input')).val('')
+    } else {
+        lastField=$(fieldToClone).clone().insertAfter('.append .row:last');
+        (lastField.find('input')).val('')
+    }
 
     if (quantidade>=4){
         $('.addCampos').css('visibility','hidden')

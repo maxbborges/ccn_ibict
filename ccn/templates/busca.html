@@ -26,6 +26,11 @@
         </select>
     </div>
     <div class="col">
+
+        Exibindo {{qtdPostagensPagina}} resultados de {{qtdPostagensBanco}}
+
+    </div>
+    <div class="col">
         <nav aria-label="Page navigation">
             {% include 'paginador.html' with pname=a page_obj=postagens %}
         </nav>
@@ -41,8 +46,7 @@
                     {% for postagem in postagens %}
                     <tr>
                         <td><input type="checkbox" name={{postagem.codigo}}>
-                            <!-- {{ forloop.counter }} - {{postagem.titulo_completo}} -->
-                            {{ postagem.codigo }} - {{postagem.titulo_completo}}
+                            {{ postagem.cod_ccn }} - {{postagem.tit_proprio}}
                         </td>
                     <tr>
                         {% endfor %}

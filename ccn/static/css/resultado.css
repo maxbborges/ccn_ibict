@@ -12,7 +12,7 @@ header p{
     margin-bottom: 0px;
 }
 
-.linhaTabela p{
+.linhaTabela .codigo p{
     color: white;
     margin-bottom: 0px;
     background-color: rgb(4, 100, 164);
@@ -43,4 +43,26 @@ tbody th {
 
 #sigla {
     text-decoration: underline;
+}
+
+.imprenta p, .designacao p{
+    margin-bottom: 0;
+}
+
+#info_adicionais{
+    display: none;
+}
+
+#info_adicionais p{
+    margin-bottom: 0px;
+}
+
+#info_adicionais span{
+    font-weight: bolder;
+}
+
+#universidades:hover + #info_adicionais {
+    display: block !important;
+    border: solid;
+    padding: 5px;
 }

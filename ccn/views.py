@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect,get_list_or_404, get_object_or_404
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.core.paginator import Paginator
-# from .forms import PostagensForm,PostagensForm1
-from .models import Postagens,Universidades, Assuntos
+from .models import Postagens,Universidades,Postagens_titulo
 from django.utils import timezone
 from django.urls import reverse
 from django.db import connection
@@ -12,16 +11,16 @@ from django.contrib.sessions.backends.db import SessionStore
 
 def index(request):
     camposConsulta ={
-       'Titulo':'tituloproprio',
-    #    'Assunto':'a',
-       'Pais de publicação':'p2.des',
-       'Idioma do Texto':'i.des',
+       'Título':'tituloproprio',
+       'Assunto':'s.DES',
+       'País de publicação':'p2.des',
+       'Idioma do texto':'i.des',
        'Código CCN':'COD_CCN',
        'Número ISSN':'COD_ISSN',
        'Situação de publicação':'SIT_PUBL',
-       'Local de Edição/Publicação':'l.des',
+       'Local de edição/publicação':'l.des',
        'Editor/Publicador':'e.nome',
-       'Titulo Abreviado':'TITULO_ABREVIADO'
+       'Título abreviado':'TITULO_ABREVIADO'
     }
     return render(request,'index.html',{'campos':camposConsulta})
 
@@ -37,9 +36,10 @@ def busca(request):
     if(request.GET.get('qtdItens')):
         request.session['qtdItens'] =request.GET.get('qtdItens') 
     if request.method == "GET":
-        post_list= Postagens().select(request.session['v1'],request.session['v2'],request.session['v3'])
+        post_list= Postagens().select(request.session['v1'],request.session['v2'],request.session['v3'],'')
+        lista = Postagens.objects.using('primary').raw(post_list)
         page_number = request.GET.get('page')
-        paginator = Paginator(post_list,request.session['qtdItens'])
+        paginator = Paginator(lista,request.session['qtdItens'])
         page_obj = paginator.page(page_number)
 
     if request.method == "POST":
@@ -48,28 +48,31 @@ def busca(request):
         request.session['v3'] = (request.POST).getlist('juncao')
         request.session['qtdItens'] = 10
 
-        post_list= Postagens().select(request.session['v1'],request.session['v2'],request.session['v3'])
+        post_list= Postagens().select(request.session['v1'],request.session['v2'],request.session['v3'],'')
+        lista = Postagens.objects.using('primary').raw(post_list)
+
         page_number = request.GET.get('page',1)
-        paginator = Paginator(post_list,request.session['qtdItens'])
+        paginator = Paginator(lista,request.session['qtdItens'])
         page_obj = paginator.page(page_number)
-    
-    return render(request,'busca.html',{'postagens': page_obj,'itens':numeroDeItens})
+
+    qtdPostagensPagina = int(request.session['qtdItens'])
+    qtdPostagensBanco = len(list(lista))
+    if (qtdPostagensPagina>qtdPostagensBanco):
+        qtdPostagensPagina = qtdPostagensBanco
+        
+    return render(request,'busca.html',{'postagens': page_obj,'itens':numeroDeItens,'qtdPostagensBanco':qtdPostagensBanco,'qtdPostagensPagina':qtdPostagensPagina})
     
 
 def resultado(request):
-    lista_postagens=[]
-    lista_universidades=[]
-    lista_assuntos=[]
-    formatoConsulta = request.POST['formatoConsulta']
+    lista_itens=''
     if request.method == "POST":
         for post in request.POST:
             if (post!='csrfmiddlewaretoken' and post!='formatoConsulta'):
-                a= Postagens().select2(request.session['v1'],request.session['v2'],request.session['v3'],post)
-                lista_postagens.append(a)
-                if (formatoConsulta=='Detalhado'):
-                    lista_universidades.append(Universidades().select(post))
-                if (formatoConsulta!='Simples'):
-                    lista_assuntos.append(Assuntos().select(post))
+                lista_itens=lista_itens+"'"+str(post)+"'"+","
 
+        if (request.POST['formatoConsulta']=='Detalhado'):
+            lista_universidades = list(Universidades.objects.using('primary').raw(Universidades().select(lista_itens[:-1])))
+        lista_postagens = list(Postagens.objects.using('primary').raw(Postagens().select(request.session['v1'],request.session['v2'],request.session['v3'],lista_itens[:-1])))
+        lista_titulos = Postagens_titulo.objects.using('primary').raw(Postagens_titulo().get_titulo_completo(lista_itens[:-1]))
 
-    return render(request, 'resultado.html',{'lista_postagens': lista_postagens,'lista_universidades':lista_universidades,'lista_assuntos':lista_assuntos})
+    return render(request, 'resultado.html',{'lista_postagens': lista_postagens,'lista_universidades':lista_universidades,'lista_titulos':lista_titulos})

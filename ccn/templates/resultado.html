@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load filter_tags %}
 
 {% block link %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/resultado.css' %}">
@@ -15,65 +16,95 @@
 <div class='row linhaTabela'>
     <div class='col'>
         {% if lista_postagens %}
-        {% for postagem  in lista_postagens %}
+        {% for postagem in lista_postagens %}
         <table class="table table-bordered table-sm">
             <thead>
                 <tr>
-                    <th colspan="2">
-                        <p>consulta: {{postagem.0.codigo}}</p>
+                    <th colspan="2" class='codigo'>
+                        <p>consulta: {{postagem.codigo}}</p>
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <th style="width: 15%">CCN</th>
-                    <td style="width: 85%">{{postagem.0.cod_ccn}}</td>
+                    <td style="width: 85%">{{postagem.cod_ccn}}</td>
+                </tr>
+                <tr>
+                    <th style="width: 15%">ISSN</th>
+                    <td style="width: 85%">{{postagem.cod_issn}}</td>
                 </tr>
                 <tr>
                     <th style="width: 15%">Titulo</th>
-                    {% if postagem.0.home_page %}
-                    <td style="width: 85%"><a href={{postagem.0.home_page}}>{{postagem.0.titulo_completo}}</a></td>
+                    {% for titulos in lista_titulos %}
+                    {% ifequal titulos.codigo postagem.codigo %}
+                    {% if postagem.home_page %}
+                    <td style="width: 85%"><a href={{postagem.home_page}}>{{titulos.titulo_completo}}</a></td>
                     {% else %}
-                    <td style="width: 85%">{{postagem.0.titulo_completo}}</td>
+                    <td style="width: 85%">{{titulos.titulo_completo}}</td>
                     {% endif %}
+                    {% endifequal %}
+                    {%endfor%}
                 </tr>
                 <tr>
                     <th style="width: 15%">Área de Numeração</th>
-                    <td style="width: 85%">{{postagem.0.designacao}}</td>
+                    <td style="width: 85%" class='designacao'>
+                        {% for designacao in postagem.designacoes|split:'$$' %}
+                            <p>{{designacao}}</p>
+                        {%endfor%}
+                    </td>
                 </tr>
                 <tr>
                     <th style="width: 15%">Imprenta</th>
-                    <td style="width: 85%">{{postagem.0.des}},{{postagem.0.uf_cod}}: {{postagem.0.nome}}</td>
+                    <td style="width: 85%" class='imprenta'>
+                    {% for imprenta in postagem.imprentas|split:'$$' %}
+                        <p>{{imprenta}}</p>
+                    {%endfor%}
+                    </td>
                 </tr>
-                {%if lista_assuntos%}
+
                     <tr>
                         <th style="width: 15%">Assunto</th>
                         <td style="width: 85%">
-                            {%for assunto in lista_assuntos%}
-                                {% if assunto.0.cod == postagem.0.codigo %}
-                                    {{assunto.0.assunto}}
-                                {%endif%}
-                            {%endfor%}
+                            {{postagem.assunto}}
                         </td>
                     </tr>
                     <tr>
                         <th style="width: 15%">Frequência</th>
-                        <td style="width: 85%">{{postagem.0.frequencia}}</td>
+                        <td style="width: 85%">{{postagem.frequencia}}</td>
                     </tr> 
-                {%endif%}
-                {%if lista_universidades%}
+                    {% if postagem.titulo_abreviado %}
+                    <tr>
+                        <th style="width: 15%">Titulo Abreviado</th>
+                        <td style="width: 85%">{{postagem.titulo_abreviado}}</td>
+                    </tr>
+                    {%endif%}
+                    {% if postagem.titulo_adicional %}
+                    <tr>
+                        <th style="width: 15%">Titulo Adicional</th>
+                        <td style="width: 85%">{{postagem.titulo_adicional}}</td>
+                    </tr> 
+                    {%endif%}
+                    
+
+                {%if lista_universidades %}
                     <tr>
                         <th style="width: 15%">Coleção</th>
                         <td style="width: 85%">
-                        {%for universidade in lista_universidades%}
-                            {%if universidade.0.publ_cod == postagem.0.codigo %}
-                                {%for r in universidade %}
-                                    <div><span id='sigla'>{{r.sigla}}</span><span id='des'> ({{r.uf_cod}})</span>: {{r.conteudo}}</div>
-                                {%endfor%}
-                            {%endif%}
-                        {%endfor%}
+                        {% for universidade in lista_universidades %}
+                            <div id='universidades'><span id='sigla'>{{universidade.sigla}}</span><span id='des'> ({{universidade.uf_cod}})</span>: {{universidade.conteudo}}</div>
+                            <div id='info_adicionais'>
+                                <p><span>SIGLA: </span>{{universidade.sigla}}</p>
+                                <p><span>NOME: </span>{{universidade.nome}}</p>
+                                <p><span>ENDEREÇO: </span>{{universidade.logradouro}}{{universidade.barriro}}{{universidade.cep}}</p>
+                                <p><span>TELEFONE: </span></p>
+                                <p><span>EMAIL: </span></p>
+                                <p><span>HOME PAGE: </span></p>
+                            </div>
+                            {%endfor%}
                         </td>
                     </tr>
+                    
                 {%endif%}
             </tbody>
         </table>
