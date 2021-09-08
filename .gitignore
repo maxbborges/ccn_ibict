@@ -4,3 +4,5 @@ instantclient_21_1
 ccn_ibict/__pycache__/*
 ccn/__pycache__/*
 ccn_ibict/env.py
+ccn/migrations/__pycache__/*
+ccn/templatetags/__pycache__/*

@@ -34,6 +34,12 @@
                     <th style="width: 15%">ISSN</th>
                     <td style="width: 85%">{{postagem.cod_issn}}</td>
                 </tr>
+                {% if postagem.home_page %}
+                <tr>
+                    <th style="width: 15%">ISSN On-line</th>
+                    <td style="width: 85%">{{postagem.cod_issn_online}}</td>
+                </tr>
+                {% endif %}
                 <tr>
                     <th style="width: 15%">Titulo</th>
                     {% for titulos in lista_titulos %}
@@ -57,7 +63,7 @@
                 <tr>
                     <th style="width: 15%">Imprenta</th>
                     <td style="width: 85%" class='imprenta'>
-                    {% for imprenta in postagem.imprentas|split:'$$' %}
+                    {% for imprenta in postagem.imprentas %}
                         <p>{{imprenta}}</p>
                     {%endfor%}
                     </td>

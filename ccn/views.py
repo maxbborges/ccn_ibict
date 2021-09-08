@@ -37,6 +37,7 @@ def busca(request):
         request.session['qtdItens'] =request.GET.get('qtdItens') 
     if request.method == "GET":
         post_list= Postagens().select(request.session['v1'],request.session['v2'],request.session['v3'],'')
+        
         lista = Postagens.objects.using('primary').raw(post_list)
         page_number = request.GET.get('page')
         paginator = Paginator(lista,request.session['qtdItens'])
@@ -47,7 +48,6 @@ def busca(request):
         request.session['v2'] = (request.POST).getlist('valor')
         request.session['v3'] = (request.POST).getlist('juncao')
         request.session['qtdItens'] = 10
-
         post_list= Postagens().select(request.session['v1'],request.session['v2'],request.session['v3'],'')
         lista = Postagens.objects.using('primary').raw(post_list)
 
@@ -65,6 +65,7 @@ def busca(request):
 
 def resultado(request):
     lista_itens=''
+    lista_postagens=[]
     if request.method == "POST":
         for post in request.POST:
             if (post!='csrfmiddlewaretoken' and post!='formatoConsulta'):
@@ -72,7 +73,18 @@ def resultado(request):
 
         if (request.POST['formatoConsulta']=='Detalhado'):
             lista_universidades = list(Universidades.objects.using('primary').raw(Universidades().select(lista_itens[:-1])))
+        print ('a')
         lista_postagens = list(Postagens.objects.using('primary').raw(Postagens().select(request.session['v1'],request.session['v2'],request.session['v3'],lista_itens[:-1])))
+        
+        for i,postagem in enumerate(lista_postagens):
+            _temp = []
+            for imprenta in reversed((postagem.imprentas).split('$$')[:-1]):
+                if (imprenta[0]==','):
+                    imprenta=imprenta[1:]
+                
+                _temp.append(imprenta)
+            lista_postagens[i].imprentas = _temp
+
         lista_titulos = Postagens_titulo.objects.using('primary').raw(Postagens_titulo().get_titulo_completo(lista_itens[:-1]))
 
     return render(request, 'resultado.html',{'lista_postagens': lista_postagens,'lista_universidades':lista_universidades,'lista_titulos':lista_titulos})
