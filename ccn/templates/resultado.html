@@ -34,7 +34,7 @@
                     <th style="width: 15%">ISSN</th>
                     <td style="width: 85%">{{postagem.cod_issn}}</td>
                 </tr>
-                {% if postagem.home_page %}
+                {% if postagem.cod_issn_online %}
                 <tr>
                     <th style="width: 15%">ISSN On-line</th>
                     <td style="width: 85%">{{postagem.cod_issn_online}}</td>
@@ -98,16 +98,18 @@
                         <th style="width: 15%">Coleção</th>
                         <td style="width: 85%">
                         {% for universidade in lista_universidades %}
+                            {% if universidade.publ_cod == postagem.codigo %}
                             <div id='universidades'><span id='sigla'>{{universidade.sigla}}</span><span id='des'> ({{universidade.uf_cod}})</span>: {{universidade.conteudo}}</div>
                             <div id='info_adicionais'>
                                 <p><span>SIGLA: </span>{{universidade.sigla}}</p>
                                 <p><span>NOME: </span>{{universidade.nome}}</p>
-                                <p><span>ENDEREÇO: </span>{{universidade.logradouro}}{{universidade.barriro}}{{universidade.cep}}</p>
-                                <p><span>TELEFONE: </span></p>
-                                <p><span>EMAIL: </span></p>
-                                <p><span>HOME PAGE: </span></p>
+                                <p><span>ENDEREÇO: </span>{{universidade.logradouro}}{{universidade.barriro}} - CEP: {{universidade.cep}}</p>
+                                {% for a in universidade.numero %}
+                                    <p>{{a}}</p>
+                                {%endfor%}
                             </div>
-                            {%endfor%}
+                            {%endif%}
+                        {%endfor%}
                         </td>
                     </tr>
                     
