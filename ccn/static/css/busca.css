@@ -1,3 +1,9 @@
 main {
     margin-top: 10px;
 }
+
+.postagemNotFound{
+    text-align: center;
+    font-size: 30px;
+    margin: 30px;
+}

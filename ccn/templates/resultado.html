@@ -8,7 +8,7 @@
 
 {% block header %}
 <div class='row'>
-    <p>Consulta ao CCN</p>
+    <p>Consulta ao CCN - Formato {{formatoConsulta}}</p>
 </div>
 {% endblock %}
 
@@ -21,7 +21,7 @@
             <thead>
                 <tr>
                     <th colspan="2" class='codigo'>
-                        <p>consulta: {{postagem.codigo}}</p>
+                        <p>consulta: {{postagem.cod}}</p>
                     </th>
                 </tr>
             </thead>
@@ -30,10 +30,12 @@
                     <th style="width: 15%">CCN</th>
                     <td style="width: 85%">{{postagem.cod_ccn}}</td>
                 </tr>
+                {% if postagem.cod_issn %}
                 <tr>
-                    <th style="width: 15%">ISSN</th>
+                    <th style="width: 15%">ISSN Impresso</th>
                     <td style="width: 85%">{{postagem.cod_issn}}</td>
                 </tr>
+                {% endif %}
                 {% if postagem.cod_issn_online %}
                 <tr>
                     <th style="width: 15%">ISSN On-line</th>
@@ -43,69 +45,96 @@
                 <tr>
                     <th style="width: 15%">Titulo</th>
                     {% for titulos in lista_titulos %}
-                    {% ifequal titulos.codigo postagem.codigo %}
+                    {% if forloop.parentloop.counter == forloop.counter%}
+                    <td style="width: 85%">{{titulos}}</td>
+                    {% endif %}
+                    
+                    
+                    <!-- {% ifequal titulos.codigo postagem.codigo %}
                     {% if postagem.home_page %}
                     <td style="width: 85%"><a href={{postagem.home_page}}>{{titulos.titulo_completo}}</a></td>
                     {% else %}
                     <td style="width: 85%">{{titulos.titulo_completo}}</td>
                     {% endif %}
-                    {% endifequal %}
+                    {% endifequal %} -->
                     {%endfor%}
                 </tr>
                 <tr>
                     <th style="width: 15%">Área de Numeração</th>
+                    {% for designacao in designacoes %}
+                    {% if forloop.parentloop.counter == forloop.counter%}
                     <td style="width: 85%" class='designacao'>
-                        {% for designacao in postagem.designacoes|split:'$$' %}
-                            <p>{{designacao}}</p>
-                        {%endfor%}
+                        <p>{{designacao | linebreaksbr}}</p>
                     </td>
+                    {%endif%}
+                    {%endfor%}
                 </tr>
                 <tr>
+                    {% for imprenta in imprentas %}
+                    {% if forloop.parentloop.counter == forloop.counter%}
                     <th style="width: 15%">Imprenta</th>
                     <td style="width: 85%" class='imprenta'>
-                    {% for imprenta in postagem.imprentas %}
-                        <p>{{imprenta}}</p>
-                    {%endfor%}
+                        
+                        <p>{{imprenta| linebreaksbr}}</p>
+                        
                     </td>
+                    {% endif %}
+                    {%endfor%}
                 </tr>
-
+                    {% if formatoConsulta != 'Simples' %}
+                    {% if assuntos %}
                     <tr>
+                        {% for assunto in assuntos %}
+                        {% if forloop.parentloop.counter == forloop.counter%}
                         <th style="width: 15%">Assunto</th>
                         <td style="width: 85%">
-                            {{postagem.assunto}}
+                            {{assunto | linebreaksbr}}
                         </td>
+                        {% endif %}
+                        {%endfor%}
                     </tr>
+                    {%endif%}
                     <tr>
                         <th style="width: 15%">Frequência</th>
                         <td style="width: 85%">{{postagem.frequencia}}</td>
                     </tr> 
                     {% if postagem.titulo_abreviado %}
+                    {% if postagem.titulo_abreviado != "Sum. publ. period. port." %}
                     <tr>
-                        <th style="width: 15%">Titulo Abreviado</th>
+                        <th style="width: 15%">Título Abreviado</th>
                         <td style="width: 85%">{{postagem.titulo_abreviado}}</td>
                     </tr>
                     {%endif%}
+                    {%endif%}
                     {% if postagem.titulo_adicional %}
                     <tr>
-                        <th style="width: 15%">Titulo Adicional</th>
+                        <th style="width: 15%">Título Adicional</th>
                         <td style="width: 85%">{{postagem.titulo_adicional}}</td>
                     </tr> 
                     {%endif%}
-                    
+                    <tr class='continuacao_parcial'>
+                        <th style="width: 15%">Continuação Parcial de:</th>
+                        <td style="width: 85%">1</td>
+                    </tr>
+                    <tr class='continuado_por'>
+                        <th style="width: 15%">Continuado por:</th>
+                        <td style="width: 85%">2</td>
+                    </tr>
 
                 {%if lista_universidades %}
                     <tr>
                         <th style="width: 15%">Coleção</th>
                         <td style="width: 85%">
                         {% for universidade in lista_universidades %}
-                            {% if universidade.publ_cod == postagem.codigo %}
+
+                            {% if universidade.publ_cod == postagem.cod %}
                             <div id='universidades'><span id='sigla'>{{universidade.sigla}}</span><span id='des'> ({{universidade.uf_cod}})</span>: {{universidade.conteudo}}</div>
                             <div id='info_adicionais'>
                                 <p><span>SIGLA: </span>{{universidade.sigla}}</p>
                                 <p><span>NOME: </span>{{universidade.nome}}</p>
                                 <p><span>ENDEREÇO: </span>{{universidade.logradouro}}{{universidade.barriro}} - CEP: {{universidade.cep}}</p>
-                                {% for a in universidade.numero %}
-                                    <p>{{a}}</p>
+                                {% for uni in universidade.numero %}
+                                    <p>{{uni}}</p>
                                 {%endfor%}
                             </div>
                             {%endif%}
@@ -113,6 +142,7 @@
                         </td>
                     </tr>
                     
+                {%endif%}
                 {%endif%}
             </tbody>
         </table>

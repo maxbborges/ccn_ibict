@@ -4,7 +4,7 @@
   <li class="page-item"><a class="page-link" href="?page=1">Primeira</a></li>
   <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">ANTERIOR</a></li>
   {% endif %}
-  <li class="page-item"><a class="page-link" >{{ page_obj.number }} de {{page_obj.paginator.num_pages}}</a></li>
+  <li class="page-item" style="width: 100px;text-align: center;"><a class="page-link" >{{ page_obj.number }} de {{page_obj.paginator.num_pages}}</a></li>
   {% if page_obj.has_next %}
   <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">PROXIMA</a></li>
   <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Ultima</a></li>

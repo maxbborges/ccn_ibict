@@ -7,12 +7,13 @@
 
 {% block header %}
 <div class='row linhaColabore'>
-    <p>Colabore</p>
+    <p>Consulta ao CCN</p>
 </div>
 {% endblock %}
 
 {% block main %}
 <div class='row'>
+    {% if postagens %}
     <div class="col">
         <select class="input-group-text selectpicker" id='qtdItens'>
             {% for item in itens %}
@@ -25,16 +26,18 @@
             {% endfor %}
         </select>
     </div>
+    
     <div class="col">
-
         Exibindo {{qtdPostagensPagina}} resultados de {{qtdPostagensBanco}}
-
     </div>
+    
     <div class="col">
         <nav aria-label="Page navigation">
             {% include 'paginador.html' with pname=a page_obj=postagens %}
         </nav>
     </div>
+    {% endif %}
+
 </div>
 <form method="POST" class="post-form" action='/resultado'>
     {% csrf_token %}
@@ -43,16 +46,24 @@
             <table class="table .table-striped">
                 <tbody>
                     {% if postagens %}
-                    {% for postagem in postagens %}
+                        {% for postagem in postagens %}
+                            {% for item in titulos%}
+                                {% if forloop.parentloop.counter == forloop.counter%}
                     <tr>
-                        <td><input type="checkbox" name={{postagem.codigo}}>
-                            {{ postagem.cod_ccn }} - {{postagem.tit_proprio}}
+                        <td><input type="checkbox" name={{postagem.cod}}>
+                            {{ postagem.cod_ccn }} > {{item}}
                         </td>
                     <tr>
+                                {% endif %}
+                            {% endfor %}
                         {% endfor %}
-                        {% else %}
-                            Nenhum item encontrado!
-                        {% endif %}
+                        
+                    {% else %}
+                    <div class="postagemNotFound">
+                        Nenhum item encontrado!
+                    </div>
+                    
+                    {% endif %}
                 </tbody>
             </table>
             
@@ -60,15 +71,21 @@
     </div>
     <div class="row">
         <div class="col">
+            {% if postagens %}
             <select class="input-group-text selectpicker" name='formatoConsulta'>
                 <option title="Combo 1" selected>Detalhado</option>
                 <option title="Combo 2">Completo</option>
                 <option title="Combo 3">Simples</option>
             </select>
+            {% endif %}
         </div>
+        
         <div class="col">
+            {% if postagens %}
             <button type="submit" class="btn btn-primary visualizarRegistros">Visualizar Registros</button>
+            {% endif %}
         </div>
+        
         <div class="col">
             <button type="button" class="btn btn-primary novaConsulta">Nova Consulta</button>
         </div>
