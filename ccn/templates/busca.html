@@ -51,7 +51,7 @@
                                 {% if forloop.parentloop.counter == forloop.counter%}
                     <tr>
                         <td><input type="checkbox" name={{postagem.cod}}>
-                            {{ postagem.cod_ccn }} > {{item}}
+                            {{ forloop.counter0|add:postagens.start_index }} - {{item}}
                         </td>
                     <tr>
                                 {% endif %}

@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect,get_list_or_404, get_object_or_404
 from django.core.paginator import Paginator
 from django.http import HttpResponse
-from django.core.paginator import Paginator
 from .models import Postagens,Universidades,Titulos,Impretas,Editoras,Localidades,Spine,Assuntos,Designacao
 from django.utils import timezone
 from django.urls import reverse
@@ -16,7 +15,7 @@ def index(request):
        'País de publicação':'pais',
        'Idioma do texto':'idioma',
        'Código CCN':'codccn',
-       'Número ISSN':'codissn',
+       'Número ISSN':'cod_issn',
        'Situação de publicação':'sitpubl',
        'Local de edição/publicação':'imprenta',
        'Editor/Publicador':'local',
@@ -52,39 +51,9 @@ def busca(request):
     # RECUPERA OS TITULOS DO MODEL TITULOS
     listaCodPublicacoes=[]
     for l in lista:
-        	listaCodPublicacoes.append(l.cod)
+        listaCodPublicacoes.append(l.cod)
 
-    tituloslistaResult = Titulos.objects.using('primary').filter(publ_cod__in=listaCodPublicacoes)
-
-    # UNE OS TITULOS OBTIDOS DO MODEL
-    oldCod=0
-    arrayTitulos=[]
-    for i,titulos in enumerate(tituloslistaResult):
-        cod=titulos.publ_cod
-        if oldCod==0:
-            oldCod=cod
-            titulo=''
-        if cod!=oldCod:
-            arrayTitulos.append(titulo)
-            oldCod=cod
-            titulo=''
-        if (titulos.tipo=='01'):
-            titulo=titulo+titulos.titulo
-        if (titulos.tipo=='02'):
-            titulo=titulo+' ('+titulos.titulo+')'
-        if (titulos.tipo=='07'):
-            titulo=titulo+' : '+titulos.titulo
-        if (titulos.tipo=='08'):
-            titulo=titulo+' . '+titulos.titulo
-        if (titulos.tipo=='11'):
-            titulo=titulo+' = '+titulos.titulo
-        if (titulos.tipo=='14'):
-            titulo=titulo+' / '+titulos.titulo
-        if (titulos.tipo=='15'):
-            titulo=titulo+' . '+titulos.titulo
-
-        if i==len(tituloslistaResult)-1:
-            arrayTitulos.append(titulo)
+    arrayTitulos=montaTitulos(listaCodPublicacoes)
         
     paginator = Paginator(lista,request.session['qtdItens'])
     page = request.GET.get('page')
@@ -120,100 +89,17 @@ def resultado(request):
         # Recupera todas as publicações selecionadas
         lista_postagens = list(Postagens.objects.using('primary').filter(cod__in=lista_itens2))
 
-        # Recupera todos os titulo das publicações
-        lista_titulos = Titulos.objects.using('primary').filter(publ_cod__in=lista_itens2)
-
-        lista_designacoes = Designacao.objects.using('primary').filter(publ_cod__in=lista_itens2)
-        texto=''
-        for i,designacao in enumerate(lista_designacoes):
-            texto = texto + designacao.designacao + '\n'
-            if (i!=len(lista_designacoes)-1):
-                if (lista_designacoes[i].publ_cod==lista_designacoes[i+1].publ_cod):
-                    continue
-            
-            arrayDesignacoes.append(texto)
-            texto=''
+        # Recupera as designacoes/Área de numeração
+        arrayDesignacoes=montaDesignacoes(lista_itens2)
 
         # Recupera todas as imprentas das publicações
-        lista_imprentas = Impretas.objects.using('primary').filter(publ_cod__in=lista_itens2)
-        oldCod=0
-        
-        editoras=[]
-        localidades=[]
-        for i,imprentas in enumerate(lista_imprentas):
-            editoras.append(imprentas.edto_cod)
-            localidades.append(imprentas.muni_cod)
-
-            # Verifica se é a ultima posição do array
-            if (i!=len(lista_imprentas)-1):
-                if (lista_imprentas[i].publ_cod==lista_imprentas[i+1].publ_cod):
-                    continue
-
-            editora = Editoras.objects.using('primary').filter(cod__in=editoras).order_by('nome')
-
-            texto=''
-            for i,e in enumerate(editora):
-                localidade = list(Localidades.objects.using('primary').filter(cod=localidades[i]))
-                texto=texto+localidade[0].des+', '
-                texto=texto+localidade[0].pai_cod+': '
-                texto=texto+e.nome+'\n'
-                
-            arrayImprenta.append(texto)
-
-            editoras=[]
-            localidades=[]
-
+        arrayImprenta=montaImprenta(lista_itens2)
 
         # Recupera todos os assuntos das publicações
-        lista_spine=Spine.objects.using('primary').filter(publ_cod__in=lista_itens2)
-        oldCod=0
-        for i,spine in enumerate(lista_spine):
-            cod=spine.publ_cod
-            if oldCod==0:
-                textoSpine=''
-                oldCod=spine.publ_cod
-
-            if cod!=oldCod:
-                arrayAssuntos.append(textoSpine[:-2])
-                oldCod=cod
-                textoSpine=''
-            
-            lista_assuntos=Assuntos.objects.using('primary').filter(cod=spine.spin_cod)
-            for assunto in lista_assuntos:
-                textoSpine=textoSpine+assunto.des+', '
-            
-            if i==len(lista_spine)-1:
-                arrayAssuntos.append(textoSpine[:-2])
+        arrayAssuntos=montaAssuntos(lista_itens2)
 
         # Formata os titulos para o padrão de exibição
-        oldCod=0
-        for i,titulos in enumerate(lista_titulos):
-            cod=titulos.publ_cod
-            if oldCod==0:
-                oldCod=cod
-                titulo=''
-            if cod!=oldCod:
-                arrayTitulos.append(titulo)
-                oldCod=cod
-                titulo=''
-            if (titulos.tipo=='01'):
-                titulo=titulo+titulos.titulo
-            if (titulos.tipo=='02'):
-                titulo=titulo+' ('+titulos.titulo+')'
-            if (titulos.tipo=='07'):
-                titulo=titulo+' : '+titulos.titulo
-            if (titulos.tipo=='08'):
-                titulo=titulo+' . '+titulos.titulo
-            if (titulos.tipo=='11'):
-                titulo=titulo+' = '+titulos.titulo
-            if (titulos.tipo=='14'):
-                titulo=titulo+' / '+titulos.titulo
-            if (titulos.tipo=='15'):
-                titulo=titulo+' . '+titulos.titulo
-
-            if i==len(lista_titulos)-1:
-                arrayTitulos.append(titulo)
-        
+        arrayTitulos=montaTitulos(lista_itens2)
 
         if (request.POST['formatoConsulta']=='Detalhado'):
             lista_universidades = list(Universidades.objects.using('primary').raw(Universidades().select(','.join(lista_itens2))))
@@ -248,3 +134,80 @@ def resultado(request):
         'assuntos':arrayAssuntos,
         'designacoes':arrayDesignacoes,
         'formatoConsulta':request.POST['formatoConsulta']})
+
+def montaTitulos(listaCodPublicacoes):
+    arrayTitulos=[]
+    for cod in listaCodPublicacoes:
+        titulosRetorno = Titulos.objects.using('primary').filter(publ_cod=cod)
+        titulo=''
+        tipos=[]
+        for titulos in titulosRetorno:
+            if titulos.tipo not in tipos:
+                tipos.append(titulos.tipo)
+            else:
+                titulo=titulo+' ; '+titulos.titulo
+                continue
+
+            if (titulos.tipo=='01'):
+                titulo=titulo+titulos.titulo
+            if (titulos.tipo=='02'):
+                titulo=titulo+' ('+titulos.titulo+')'
+            if (titulos.tipo=='07'):
+                titulo=titulo+' : '+titulos.titulo
+            if (titulos.tipo=='08'):
+                titulo=titulo+' . '+titulos.titulo
+            if (titulos.tipo=='11'):
+                titulo=titulo+' = '+titulos.titulo
+            if (titulos.tipo=='14'):
+                titulo=titulo+' / '+titulos.titulo
+            if (titulos.tipo=='15'):
+                titulo=titulo+' . '+titulos.titulo
+        
+        arrayTitulos.append(titulo)
+    return arrayTitulos
+
+def montaDesignacoes(lista):
+    arrayDesignacoes=[]
+    for cod in lista:
+        lista_designacoes = Designacao.objects.using('primary').filter(publ_cod=cod)
+        texto=''
+        for designacoes in lista_designacoes:
+            texto = texto + designacoes.designacao + '\n'
+        
+        arrayDesignacoes.append(texto)
+    return arrayDesignacoes
+
+def montaImprenta(lista):
+    arrayImprenta=[]
+    for cod in lista:
+        lista_imprentas = Impretas.objects.using('primary').filter(publ_cod=cod)
+        editoras=[]
+        localidades=[]
+
+        for imprentas in lista_imprentas:
+            editoras.append(imprentas.edto_cod)
+            localidades.append(imprentas.muni_cod)
+
+        texto=''
+        for i,codEditora in enumerate(editoras):
+            editora = list(Editoras.objects.using('primary').filter(cod=codEditora))
+            localidade = list(Localidades.objects.using('primary').filter(cod=localidades[i]))
+            texto=texto+localidade[0].des+', '
+            texto=texto+localidade[0].pai_cod+': '
+            texto=texto+editora[0].nome+'\n'
+        
+        arrayImprenta.append(texto)
+    return arrayImprenta
+
+def montaAssuntos(lista):
+    arrayAssuntos=[]
+    for cod in lista:
+        lista_spine=Spine.objects.using('primary').filter(publ_cod=cod)
+        textoSpine=''
+        for spine in lista_spine:
+            lista_assuntos=Assuntos.objects.using('primary').filter(cod=spine.spin_cod)
+            for assunto in lista_assuntos:
+                textoSpine=textoSpine+assunto.des+', '
+        
+        arrayAssuntos.append(textoSpine[:-2])
+    return arrayAssuntos

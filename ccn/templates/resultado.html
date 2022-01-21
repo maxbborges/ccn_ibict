@@ -46,7 +46,13 @@
                     <th style="width: 15%">Titulo</th>
                     {% for titulos in lista_titulos %}
                     {% if forloop.parentloop.counter == forloop.counter%}
-                    <td style="width: 85%">{{titulos}}</td>
+                    {% if postagem.home_page %}
+                        <td style="width: 85%"><a href="{{postagem.home_page}}">{{titulos}}</a></td>
+                    {% else %}
+                        <td style="width: 85%">{{titulos}}</td>
+                    {% endif %}
+                    
+                    
                     {% endif %}
                     
                     

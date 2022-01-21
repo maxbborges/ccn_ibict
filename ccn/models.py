@@ -3,6 +3,7 @@ from django.db import models
 class Postagens(models.Model):
     class Meta:
         db_table='"ccn"."publicacao"'
+        ordering = ['tit_proprio','cod']
 
     cod = models.IntegerField(primary_key=True) #cod
     pais = models.CharField(max_length=100,db_column='pai_cod') #pai_cod
@@ -18,41 +19,39 @@ class Postagens(models.Model):
     @property
     def frequencia(self):
         if self._frequencia == 'Q':
-            return 'TRIMESTRAL'
+            return 'Trimestral'
         if self._frequencia == 'M':
-            return 'MENSAL'
+            return 'Mensal'
         if self._frequencia == 'B':
-            return 'BIMESTRAL'
-        if self._frequencia == 'B':
-            return 'BIMESTRAL'
+            return 'Bimestral'
         if self._frequencia == 'S':
-            return 'BIMENSAL'
+            return 'Bimensal'
         if self._frequencia == '?':
-            return 'DESCONHECIDO'
+            return 'Desconhecido'
         if self._frequencia == 'A':
-            return 'ANUAL'
+            return 'Anual'
         if self._frequencia == 'T':
-            return 'QUADRIMESTRAL'
+            return 'Quadrimensal'
         if self._frequencia == 'K':
-            return 'IRREGULAR'
+            return 'Irregular'
         if self._frequencia == 'Z':
-            return 'OUTRAS'
+            return 'Outras'
         if self._frequencia == 'W':
-            return 'SEMANAL'
+            return 'Semanal'
         if self._frequencia == 'H':
-            return 'TRIENAL'
+            return 'Trienal'
         if self._frequencia == 'I':
-            return 'TRÊS VEZES NA SEMANA'
+            return 'Três vezes na semana'
         if self._frequencia == 'J':
-            return 'TRÊS VEZES NO MES'
+            return 'Três vezes no mês'
         if self._frequencia == 'D':
-            return 'DIARIA'
+            return 'Diaria'
         if self._frequencia == 'C':
-            return 'BISSEMANAL'
+            return 'Bissemanal'
         if self._frequencia == 'E':
-            return 'QUINZENAL'
+            return 'Quinzenal'
         if self._frequencia == 'G':
-            return 'BIENAL'
+            return 'Bienal'
 		
         return self._frequencia
     
@@ -77,17 +76,22 @@ class Postagens(models.Model):
             from ccn.publicacao WHERE '''
         for i,val in enumerate(valor):
             if val:
-                textoWhere = textoWhere+f'''contains(idx_clob,'{val} within {tipo[i]}')>0 {juncao[i]} '''
+                if tipo[i]=='cod_issn':
+                    textoWhere=textoWhere+f'''{tipo[i]}='{val}' {juncao[i]} '''
+                else:
+                    textoWhere = textoWhere+f'''contains(idx_clob,'{val} within {tipo[i]}')>0 {juncao[i]} '''
+                
                 temp=juncao[i]
         textoWhere=textoWhere[:-(len(temp)+1)]
+        
 
-        consulta = consulta+textoWhere+'ORDER by cod'
-        print (consulta)
+        consulta = consulta+textoWhere+'ORDER by tit_proprio,cod'
         return consulta
 
 class Titulos(models.Model):
     class Meta:
         db_table='"ccn"."publicacao_titulo"'    
+        ordering=['seq']
 
     publ_cod = models.IntegerField(primary_key=True)
     tipo = models.CharField(max_length=100,db_column='tipo')
