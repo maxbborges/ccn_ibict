@@ -125,7 +125,7 @@ class Universidades(models.Model):
         INNER JOIN ccn.LOCALIDADE l ON l.COD = b.MUNI_COD
         WHERE
         pc.PUBL_COD IN ({codigo})
-        ORDER BY l.UF_COD, b.SIGLA,pc.SEQ  ;'''
+        ORDER BY l.UF_COD, b.SIGLA,pc.SEQ ,bc.tipo ;'''
         return consulta
 
 class Impretas(models.Model):
@@ -171,9 +171,3 @@ class Designacao(models.Model):
 
     publ_cod=models.IntegerField(primary_key=True)
     designacao=models.CharField(max_length=100,db_column='designacao')
-
-
-
-    
-
-

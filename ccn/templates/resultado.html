@@ -47,7 +47,7 @@
                     {% for titulos in lista_titulos %}
                     {% if forloop.parentloop.counter == forloop.counter%}
                     {% if postagem.home_page %}
-                        <td style="width: 85%"><a href="{{postagem.home_page}}">{{titulos}}</a></td>
+                        <td style="width: 85%"><a href="{{postagem.home_page}}" target="_blank">{{titulos}}</a></td>
                     {% else %}
                         <td style="width: 85%">{{titulos}}</td>
                     {% endif %}
@@ -112,22 +112,24 @@
                     </tr>
                     {%endif%}
                     {%endif%}
-                    {% if postagem.titulo_adicional %}
+                    <tr>
+                        <th style="width: 15%">Título Expandido</th>
+                        <td style="width: 85%"></td>
+                    </tr> 
                     <tr>
                         <th style="width: 15%">Título Adicional</th>
-                        <td style="width: 85%">{{postagem.titulo_adicional}}</td>
+                        <td style="width: 85%"></td>
                     </tr> 
-                    {%endif%}
                     <tr class='continuacao_parcial'>
                         <th style="width: 15%">Continuação Parcial de:</th>
-                        <td style="width: 85%">1</td>
+                        <td style="width: 85%"></td>
                     </tr>
                     <tr class='continuado_por'>
                         <th style="width: 15%">Continuado por:</th>
-                        <td style="width: 85%">2</td>
+                        <td style="width: 85%"></td>
                     </tr>
 
-                {%if lista_universidades %}
+                    {%if lista_universidades %}
                     <tr>
                         <th style="width: 15%">Coleção</th>
                         <td style="width: 85%">
@@ -136,11 +138,11 @@
                             {% if universidade.publ_cod == postagem.cod %}
                             <div id='universidades'><span id='sigla'>{{universidade.sigla}}</span><span id='des'> ({{universidade.uf_cod}})</span>: {{universidade.conteudo}}</div>
                             <div id='info_adicionais'>
-                                <p><span>SIGLA: </span>{{universidade.sigla}}</p>
-                                <p><span>NOME: </span>{{universidade.nome}}</p>
-                                <p><span>ENDEREÇO: </span>{{universidade.logradouro}}{{universidade.barriro}} - CEP: {{universidade.cep}}</p>
+                                <p><span>Sigla: </span>{{universidade.sigla}}</p>
+                                <p><span>Nome: </span>{{universidade.nome}}</p>
+                                <p><span>Endereço: </span>{{universidade.logradouro}}{{universidade.barriro}} - CEP: {{universidade.cep}}</p>
                                 {% for uni in universidade.numero %}
-                                    <p>{{uni}}</p>
+                                    <p>{{uni|safe}}</p>
                                 {%endfor%}
                             </div>
                             {%endif%}

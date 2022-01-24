@@ -50,7 +50,8 @@ tbody th {
 }
 
 #info_adicionais{
-    display: none;
+    /* display: none; */
+    padding: 0px 0px 20px 20px;
 }
 
 #info_adicionais p{
@@ -61,8 +62,8 @@ tbody th {
     font-weight: bolder;
 }
 
-#universidades:hover + #info_adicionais {
+/* #universidades:hover + #info_adicionais {
     display: block !important;
     border: solid;
     padding: 5px;
-}
+} */

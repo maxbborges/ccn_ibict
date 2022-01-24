@@ -52,8 +52,6 @@ def busca(request):
     listaCodPublicacoes=[]
     for l in lista:
         listaCodPublicacoes.append(l.cod)
-
-    arrayTitulos=montaTitulos(listaCodPublicacoes)
         
     paginator = Paginator(lista,request.session['qtdItens'])
     page = request.GET.get('page')
@@ -63,9 +61,9 @@ def busca(request):
     qtdPostagensBanco = len(list(lista))
 
     if (page=='1' or not page):
-        arrayTitulos = arrayTitulos[0:qtdPostagensPagina-1]
+        arrayTitulos=montaTitulos(listaCodPublicacoes[0:qtdPostagensPagina-1])
     else:
-        arrayTitulos = arrayTitulos[qtdPostagensPagina*(int(page)-1):(qtdPostagensPagina*int(page))-1]
+        arrayTitulos=montaTitulos(listaCodPublicacoes[qtdPostagensPagina*(int(page)-1):(qtdPostagensPagina*int(page))-1])
 
     if (qtdPostagensPagina>qtdPostagensBanco):
         qtdPostagensPagina = qtdPostagensBanco
@@ -115,11 +113,11 @@ def resultado(request):
                         _tempPos.append(i-1)
                 
                 if (int(lista_universidades[i].tipo) == 1 or  int(lista_universidades[i].tipo) == 2):
-                    _tempNumero.append("TELEFONE: "+lista_universidades[i].numero)
+                    _tempNumero.append("<b>Telefone:</b> "+lista_universidades[i].numero)
                 if (int(lista_universidades[i].tipo) == 3):
-                    _tempNumero.append("EMAIL: "+lista_universidades[i].numero)
+                    _tempNumero.append(f"<b>Email:</b> <a href='mailto:{lista_universidades[i].numero}' target='_blank'>"+lista_universidades[i].numero+'</a>')
                 if (int(lista_universidades[i].tipo) == 4):
-                    _tempNumero.append("HOME PAGE: "+lista_universidades[i].numero)
+                    _tempNumero.append(f"<b>Home Page: </b><a href='{lista_universidades[i].numero}' target='_blank'>"+lista_universidades[i].numero+'</a>')
 
                 if(i==(len(lista_universidades)-1)):
                     lista_universidades[i].numero = _tempNumero
@@ -138,32 +136,32 @@ def resultado(request):
 def montaTitulos(listaCodPublicacoes):
     arrayTitulos=[]
     for cod in listaCodPublicacoes:
-        titulosRetorno = Titulos.objects.using('primary').filter(publ_cod=cod)
+        titulosRetorno = Titulos.objects.using('primary').filter(publ_cod=cod,tipo=16)
         titulo=''
         tipos=[]
         for titulos in titulosRetorno:
-            if titulos.tipo not in tipos:
-                tipos.append(titulos.tipo)
-            else:
-                titulo=titulo+' ; '+titulos.titulo
-                continue
+            # if titulos.tipo not in tipos:
+            #     tipos.append(titulos.tipo)
+            # else:
+            #     titulo=titulo+' ; '+titulos.titulo
+            #     continue
 
-            if (titulos.tipo=='01'):
-                titulo=titulo+titulos.titulo
-            if (titulos.tipo=='02'):
-                titulo=titulo+' ('+titulos.titulo+')'
-            if (titulos.tipo=='07'):
-                titulo=titulo+' : '+titulos.titulo
-            if (titulos.tipo=='08'):
-                titulo=titulo+' . '+titulos.titulo
-            if (titulos.tipo=='11'):
-                titulo=titulo+' = '+titulos.titulo
-            if (titulos.tipo=='14'):
-                titulo=titulo+' / '+titulos.titulo
-            if (titulos.tipo=='15'):
-                titulo=titulo+' . '+titulos.titulo
+            # if (titulos.tipo=='01'):
+            #     titulo=titulo+titulos.titulo
+            # if (titulos.tipo=='02'):
+            #     titulo=titulo+' ('+titulos.titulo+')'
+            # if (titulos.tipo=='07'):
+            #     titulo=titulo+' : '+titulos.titulo
+            # if (titulos.tipo=='08'):
+            #     titulo=titulo+' . '+titulos.titulo
+            # if (titulos.tipo=='11'):
+            #     titulo=titulo+' = '+titulos.titulo
+            # if (titulos.tipo=='14'):
+            #     titulo=titulo+' / '+titulos.titulo
+            # if (titulos.tipo=='15'):
+            #     titulo=titulo+' . '+titulos.titulo
         
-        arrayTitulos.append(titulo)
+            arrayTitulos.append(titulos.titulo_completo)
     return arrayTitulos
 
 def montaDesignacoes(lista):
