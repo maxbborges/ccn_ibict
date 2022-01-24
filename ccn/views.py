@@ -80,6 +80,7 @@ def resultado(request):
     arrayDesignacoes=[]
     arrayImprenta = []
     arrayTitulosAdicionais=[]
+    arrayTitulosExpandido=[]
     if request.method == "POST":
         for post in request.POST:
             if (post!='csrfmiddlewaretoken' and post!='formatoConsulta'):
@@ -100,6 +101,7 @@ def resultado(request):
         # Formata os titulos para o padrão de exibição
         arrayTitulos=montaTitulos(lista_itens2)
         arrayTitulosAdicionais=montaTitulosAdicionais(lista_itens2)
+        arrayTitulosExpandido=montaTitulosExpandido(lista_itens2)
 
         if (request.POST['formatoConsulta']=='Detalhado'):
             lista_universidades = list(Universidades.objects.using('primary').raw(Universidades().select(','.join(lista_itens2))))
@@ -131,6 +133,7 @@ def resultado(request):
         'lista_universidades':lista_universidades,
         'lista_titulos':arrayTitulos,
         'titulos_adicionais':arrayTitulosAdicionais,
+        'titulos_expandidos':arrayTitulosExpandido,
         'imprentas':arrayImprenta,
         'assuntos':arrayAssuntos,
         'designacoes':arrayDesignacoes,
@@ -200,9 +203,19 @@ def montaTitulosAdicionais(lista):
 
         for titulo in titulosRetorno:
             texto = texto+titulo.titulo+'\n'
-        
-        if (texto==''):
-            texto=''
         arrayTitulosAdicionais.append(texto)
     
     return arrayTitulosAdicionais
+
+def montaTitulosExpandido(lista):
+    arrayTitulosExpandido=[]
+    for cod in lista:
+        titulosRetorno = Titulos.objects.using('primary').filter(publ_cod=cod,tipo='12')
+        texto=''
+
+        for titulo in titulosRetorno:
+            texto = texto+titulo.titulo+'\n'
+
+        arrayTitulosExpandido.append(texto)
+    
+    return arrayTitulosExpandido

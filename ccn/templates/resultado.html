@@ -112,10 +112,18 @@
                     </tr>
                     {%endif%}
                     {%endif%}
+                    {% if titulos_expandidos %} 
+                    {% for te in titulos_expandidos %}
+                    {% if forloop.parentloop.counter == forloop.counter%}
+                    {% if te != '' %}
                     <tr>
                         <th style="width: 15%">Título Expandido</th>
-                        <td style="width: 85%"></td>
+                        <td style="width: 85%">{{te| linebreaksbr}}</td>
                     </tr>
+                    {%endif%}
+                    {%endif%}
+                    {%endfor%}
+                    {%endif%}
                     {% if titulos_adicionais %} 
                     {% for ta in titulos_adicionais %}
                     {% if forloop.parentloop.counter == forloop.counter%}
