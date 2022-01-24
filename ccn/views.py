@@ -79,6 +79,7 @@ def resultado(request):
     arrayAssuntos=[]
     arrayDesignacoes=[]
     arrayImprenta = []
+    arrayTitulosAdicionais=[]
     if request.method == "POST":
         for post in request.POST:
             if (post!='csrfmiddlewaretoken' and post!='formatoConsulta'):
@@ -98,6 +99,7 @@ def resultado(request):
 
         # Formata os titulos para o padrão de exibição
         arrayTitulos=montaTitulos(lista_itens2)
+        arrayTitulosAdicionais=montaTitulosAdicionais(lista_itens2)
 
         if (request.POST['formatoConsulta']=='Detalhado'):
             lista_universidades = list(Universidades.objects.using('primary').raw(Universidades().select(','.join(lista_itens2))))
@@ -128,6 +130,7 @@ def resultado(request):
         'lista_postagens': lista_postagens,
         'lista_universidades':lista_universidades,
         'lista_titulos':arrayTitulos,
+        'titulos_adicionais':arrayTitulosAdicionais,
         'imprentas':arrayImprenta,
         'assuntos':arrayAssuntos,
         'designacoes':arrayDesignacoes,
@@ -140,27 +143,6 @@ def montaTitulos(listaCodPublicacoes):
         titulo=''
         tipos=[]
         for titulos in titulosRetorno:
-            # if titulos.tipo not in tipos:
-            #     tipos.append(titulos.tipo)
-            # else:
-            #     titulo=titulo+' ; '+titulos.titulo
-            #     continue
-
-            # if (titulos.tipo=='01'):
-            #     titulo=titulo+titulos.titulo
-            # if (titulos.tipo=='02'):
-            #     titulo=titulo+' ('+titulos.titulo+')'
-            # if (titulos.tipo=='07'):
-            #     titulo=titulo+' : '+titulos.titulo
-            # if (titulos.tipo=='08'):
-            #     titulo=titulo+' . '+titulos.titulo
-            # if (titulos.tipo=='11'):
-            #     titulo=titulo+' = '+titulos.titulo
-            # if (titulos.tipo=='14'):
-            #     titulo=titulo+' / '+titulos.titulo
-            # if (titulos.tipo=='15'):
-            #     titulo=titulo+' . '+titulos.titulo
-        
             arrayTitulos.append(titulos.titulo_completo)
     return arrayTitulos
 
@@ -209,3 +191,18 @@ def montaAssuntos(lista):
         
         arrayAssuntos.append(textoSpine[:-2])
     return arrayAssuntos
+
+def montaTitulosAdicionais(lista):
+    arrayTitulosAdicionais=[]
+    for cod in lista:
+        titulosRetorno = Titulos.objects.using('primary').filter(publ_cod=cod,tipo='09')
+        texto=''
+
+        for titulo in titulosRetorno:
+            texto = texto+titulo.titulo+'\n'
+        
+        if (texto==''):
+            texto=''
+        arrayTitulosAdicionais.append(texto)
+    
+    return arrayTitulosAdicionais

@@ -115,11 +115,19 @@
                     <tr>
                         <th style="width: 15%">Título Expandido</th>
                         <td style="width: 85%"></td>
-                    </tr> 
+                    </tr>
+                    {% if titulos_adicionais %} 
+                    {% for ta in titulos_adicionais %}
+                    {% if forloop.parentloop.counter == forloop.counter%}
+                    {% if ta != '' %}
                     <tr>
                         <th style="width: 15%">Título Adicional</th>
-                        <td style="width: 85%"></td>
+                        <td style="width: 85%">{{ta| linebreaksbr}}</td>
                     </tr> 
+                    {%endif%}
+                    {%endif%}
+                    {%endfor%}
+                    {%endif%}
                     <tr class='continuacao_parcial'>
                         <th style="width: 15%">Continuação Parcial de:</th>
                         <td style="width: 85%"></td>
