@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect,get_list_or_404, get_object_or_404
 from django.core.paginator import Paginator
 from django.http import HttpResponse
-from .models import Postagens,Universidades,Titulos,Impretas,Editoras,Localidades,Spine,Assuntos,Designacao
+from .models import Postagens,Universidades,Titulos,Impretas,Editoras,Localidades,Spine,Assuntos,Designacao,Relacionadas
 from django.utils import timezone
 from django.urls import reverse
 from django.db import connection
+from django.db.models import Q
 import json
 from django.contrib.sessions.backends.db import SessionStore
 
@@ -81,11 +82,31 @@ def resultado(request):
     arrayImprenta = []
     arrayTitulosAdicionais=[]
     arrayTitulosExpandido=[]
+    arrayRelacoes=[]
+    valid=False
     if request.method == "POST":
         for post in request.POST:
             if (post!='csrfmiddlewaretoken' and post!='formatoConsulta'):
+                valid=True
                 lista_itens2.append(str(post))
-        
+
+        if(valid):
+            request.session.setdefault('formatoConsulta', '')
+            request.session.setdefault('postagens', '')
+
+            request.session['postagens'] = ','.join(lista_itens2)
+            request.session['formatoConsulta'] = request.POST['formatoConsulta']
+        else:
+            lista_itens2=(request.session['postagens']).split(',')
+
+        try:
+            formatoConsulta = request.POST['formatoConsulta']
+        except:
+            try:
+                formatoConsulta=request.session['formatoConsulta']
+            except:
+                print ('erro')
+                
         # Recupera todas as publicações selecionadas
         lista_postagens = list(Postagens.objects.using('primary').filter(cod__in=lista_itens2))
 
@@ -102,8 +123,9 @@ def resultado(request):
         arrayTitulos=montaTitulos(lista_itens2)
         arrayTitulosAdicionais=montaTitulosAdicionais(lista_itens2)
         arrayTitulosExpandido=montaTitulosExpandido(lista_itens2)
+        arrayRelacoes=buscaRelacoes(lista_itens2)
 
-        if (request.POST['formatoConsulta']=='Detalhado'):
+        if (formatoConsulta=='Detalhado'):
             lista_universidades = list(Universidades.objects.using('primary').raw(Universidades().select(','.join(lista_itens2))))
             _tempNumero = []
             _tempTipo = []
@@ -137,7 +159,61 @@ def resultado(request):
         'imprentas':arrayImprenta,
         'assuntos':arrayAssuntos,
         'designacoes':arrayDesignacoes,
-        'formatoConsulta':request.POST['formatoConsulta']})
+        'formatoConsulta':formatoConsulta,
+        'relacoes':arrayRelacoes})
+
+def relacao(request):
+    publicacao ={
+        'cod':'',
+        'cod_ccn':'',
+        'cod_issn':'',
+        'cod_issn_online':'',
+        'titulo':'',
+        'home_page':'',
+        'designacoes':'',
+        'imprentas':'',
+        'assunto':'',
+        'frequencia':'',
+        'titulo_abreviado':'',
+        'titulos_expandidos':'',
+        'titulos_adicionais':'',
+        'relacoes':'',
+        'lista_universidades':''
+    }
+    publ_cod=request.POST.get("publ_cod")
+    lista_postagens = list(Postagens.objects.using('primary').filter(cod=publ_cod))[0]
+    arrayDesignacoes=montaDesignacoes([publ_cod])[0]
+    arrayImprenta=montaImprenta([publ_cod])[0]
+    arrayAssuntos=montaAssuntos([publ_cod])[0]
+    arrayTitulos=montaTitulos([publ_cod])[0]
+    arrayTitulosAdicionais=montaTitulosAdicionais([publ_cod])[0]
+    arrayTitulosExpandido=montaTitulosExpandido([publ_cod])[0]
+    arrayRelacoes=buscaRelacoes([publ_cod])[0]
+    arrayUniversidades=montaColecao([publ_cod])
+
+    print (arrayUniversidades[0])
+
+    publicacao['cod']=lista_postagens.cod
+    publicacao['cod_ccn']=lista_postagens.cod_ccn
+    publicacao['cod_issn']=lista_postagens.cod_issn
+    publicacao['cod_issn_online']=lista_postagens.cod_issn_online
+    publicacao['titulo']=arrayTitulos
+    publicacao['home_page']=lista_postagens.home_page
+    publicacao['designacoes']=arrayDesignacoes
+    publicacao['imprentas']=arrayImprenta
+    publicacao['assunto']=arrayAssuntos
+    publicacao['frequencia']=lista_postagens.frequencia
+    publicacao['titulo_abreviado']=''
+    publicacao['titulos_expandidos']=arrayTitulosExpandido
+    publicacao['titulos_adicionais']=arrayTitulosAdicionais
+    publicacao['relacoes']=arrayRelacoes
+    publicacao['lista_universidades']=arrayUniversidades
+
+
+    print (arrayRelacoes)
+    return render(request, 'relacao.html',{
+        'postagem':publicacao
+    })
 
 def montaTitulos(listaCodPublicacoes):
     arrayTitulos=[]
@@ -147,6 +223,7 @@ def montaTitulos(listaCodPublicacoes):
         tipos=[]
         for titulos in titulosRetorno:
             arrayTitulos.append(titulos.titulo_completo)
+
     return arrayTitulos
 
 def montaDesignacoes(lista):
@@ -219,3 +296,105 @@ def montaTitulosExpandido(lista):
         arrayTitulosExpandido.append(texto)
     
     return arrayTitulosExpandido
+
+def buscaRelacoes(lista):
+    arrayRelacoes=[]
+    for cod in lista:
+        arrayRelacoesTemp=[]
+        relacoes = Relacionadas.objects.using('primary').filter(Q(publ_cod=cod) | Q(publ_cod_rel=cod))
+        for rel in relacoes:
+            novoRel = montaRelacoes(rel,cod)
+            arrayRelacoesTemp.append(novoRel)
+        arrayRelacoes.append(arrayRelacoesTemp)
+    return arrayRelacoes
+
+def montaRelacoes(rel,cod):
+    novoRel = {
+        'titulo':'',
+        'publ_cod':'',
+        'tipo':rel.tipo
+    }
+
+    if (rel.publ_cod == int(cod)):
+        if (rel.tipo=='A'):
+            novoRel["tipo"]='E Subsérie de'
+        if (rel.tipo=='B'):
+            novoRel["tipo"]='É Suplemento de'
+        if (rel.tipo=='C'):
+            novoRel["tipo"]='Continuação de'
+        if (rel.tipo=='D'):
+            novoRel["tipo"]='Continuação Parcial de'
+        if (rel.tipo=='E'):
+            novoRel["tipo"]='Formado pela fusão de'
+        if (rel.tipo=='F'):
+            novoRel["tipo"]='Absorveu'
+        if (rel.tipo=='G'):
+            novoRel["tipo"]='Absorveu em parte'
+        if (rel.tipo=='H'):
+            novoRel["tipo"]='Formado pela Subdivisão de'
+        if (rel.tipo=='I'):
+            novoRel["tipo"]='Notas de Indexação'
+        if (rel.tipo=='J'):
+            novoRel["tipo"]='E Edição em outro idioma'
+        if (rel.tipo=='K'):
+            novoRel["tipo"]='Fundiu com'
+        if (rel.tipo=='L'):
+            novoRel["tipo"]='Para formar'
+
+        novoRel['titulo']=montaTitulos([rel.publ_cod_rel])[0]
+        novoRel['publ_cod']=rel.publ_cod_rel
+    else:
+        if (rel.tipo=='A'):
+            novoRel["tipo"]='Tem subsérie'
+        if (rel.tipo=='B'):
+            novoRel["tipo"]='Tem suplemento'
+        if (rel.tipo=='C'):
+            novoRel["tipo"]='Continuado por'
+        if (rel.tipo=='D'):
+            novoRel["tipo"]='Continuado em parte por'
+        if (rel.tipo=='E'):
+            novoRel["tipo"]='Para formar'
+        if (rel.tipo=='F'):
+            novoRel["tipo"]='Absorvido por'
+        if (rel.tipo=='G'):
+            novoRel["tipo"]='bsorvido em parte por'
+        if (rel.tipo=='H'):
+            novoRel["tipo"]='Subdividiu-se em'
+        if (rel.tipo=='I'):
+            novoRel["tipo"]='Subdividiu-se em'
+        if (rel.tipo=='J'):
+            novoRel["tipo"]='Tem edição em outro idioma'
+        if (rel.tipo=='K'):
+            novoRel["tipo"]='Formado pela fusão de'
+
+        novoRel['titulo']=montaTitulos([rel.publ_cod])[0]
+        novoRel['publ_cod']=rel.publ_cod
+    
+    return novoRel
+
+def montaColecao(lista):
+    lista_universidades = list(Universidades.objects.using('primary').raw(Universidades().select(','.join(lista))))
+    _tempNumero = []
+    _tempTipo = []
+    _tempPos =[]
+    for i,universidade in enumerate(lista_universidades):
+        if lista_universidades[i].seq != lista_universidades[i-1].seq and i!=0:
+            lista_universidades[i-1].numero = _tempNumero
+            _tempNumero =[]
+        else:
+            if i!=0:
+                _tempPos.append(i-1)
+                
+        if (int(lista_universidades[i].tipo) == 1 or  int(lista_universidades[i].tipo) == 2):
+            _tempNumero.append("<b>Telefone:</b> "+lista_universidades[i].numero)
+        if (int(lista_universidades[i].tipo) == 3):
+            _tempNumero.append(f"<b>Email:</b> <a href='mailto:{lista_universidades[i].numero}' target='_blank'>"+lista_universidades[i].numero+'</a>')
+        if (int(lista_universidades[i].tipo) == 4):
+            _tempNumero.append(f"<b>Home Page: </b><a href='{lista_universidades[i].numero}' target='_blank'>"+lista_universidades[i].numero+'</a>')
+
+        if(i==(len(lista_universidades)-1)):
+            lista_universidades[i].numero = _tempNumero
+            for pos in reversed(_tempPos):
+                lista_universidades.pop(pos)
+    
+    return lista_universidades

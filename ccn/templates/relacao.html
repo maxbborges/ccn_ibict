@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load filter_tags %}
+
+{% block link %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/resultado.css' %}">
+{% endblock %}
+
+{% block header %}
+<div class='row'>
+    <p>Consulta ao CCN - Formato {{formatoConsulta}}</p>
+</div>
+{% endblock %}
+
+{% block main %}
+<div class='row linhaTabela'>
+    <div class='col'>
+        {% if postagem %}
+        <table class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th colspan="2" class='codigo'>
+                        <p>consulta: {{postagem.cod}}</p>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th style="width: 15%">CCN</th>
+                    <td style="width: 85%">{{postagem.cod_ccn}}</td>
+                </tr>
+                <tr>
+                    <th style="width: 15%">ISSN Impresso</th>
+                    <td style="width: 85%">{{postagem.cod_issn}}</td>
+                </tr>
+                {% if postagem.cod_issn_online %}
+                <tr>
+                    <th style="width: 15%">ISSN On-line</th>
+                    <td style="width: 85%">{{postagem.cod_issn_online}}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <th style="width: 15%">Titulo</th>
+                    {% if postagem.home_page %}
+                    <td style="width: 85%"><a href="{{postagem.home_page}}" target="_blank">{{titulos}}</a></td>
+                    {% else %}
+                    <td style="width: 85%">{{postagem.titulo}}</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <th style="width: 15%">Área de Numeração</th>
+                    <td style="width: 85%" class='designacao'>
+                        <p>{{postagem.designacoes | linebreaksbr}}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 15%">Imprenta</th>
+                    <td style="width: 85%" class='imprenta'>
+
+                        <p>{{postagem.imprentas| linebreaksbr}}</p>
+
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 15%">Assunto</th>
+                    <td style="width: 85%">
+                        {{postagem.assunto | linebreaksbr}}
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 15%">Frequência</th>
+                    <td style="width: 85%">{{postagem.frequencia}}</td>
+                </tr>
+                {% if postagem.postagem.titulo_abreviado %}
+                <tr>
+                    <th style="width: 15%">Título Abreviado</th>
+                    <td style="width: 85%">{{postagem.titulo_abreviado}}</td>
+                </tr>
+                {% endif %}
+                {% if postagem.titulo_expandido %}
+                <tr>
+                    <th style="width: 15%">Título Expandido</th>
+                    <td style="width: 85%">{{postagem.titulo_expandido| linebreaksbr}}</td>
+                </tr>
+                {% endif %}
+                {% if postagem.titulo_adicional %}
+                <tr>
+                    <th style="width: 15%">Título Adicional</th>
+                    <td style="width: 85%">{{postagem.titulo_adicional | linebreaksbr}}</td>
+                </tr>
+                {% endif %}
+                {% if postagem.relacoes %}
+                {% for r in postagem.relacoes %}
+                <tr class='continuacao_parcial'>
+                    <th style="width: 15%">
+                        <form method="POST" class="post-form" action="/relacao" id='formBusca'>
+                            {% csrf_token %}
+                            <input type="hidden" name="publ_cod" value="{{r.publ_cod}}">
+                            <button type="submit" class="btn btn-primary btn_continuacao">{{r.tipo}}</button>
+                        </form>
+                    </th>
+                    <td style="width: 85%">{{r.titulo}}</td>
+                </tr>
+                {%endfor%}
+                {% endif %}
+                <tr>
+                    <th style="width: 15%">Coleção</th>
+                    <td style="width: 85%">
+                        {% for universidade in postagem.lista_universidades %}
+                        <div id='universidades'><span id='sigla'>{{universidade.sigla}}</span><span id='des'>
+                                ({{universidade.uf_cod}})</span>: {{universidade.conteudo}}</div>
+                        <div id='info_adicionais'>
+                            <p><span>Sigla: </span>{{universidade.sigla}}</p>
+                            <p><span>Nome: </span>{{universidade.nome}}</p>
+                            <p><span>Endereço: </span>{{universidade.logradouro}}{{universidade.bairro}} - CEP:
+                                {{universidade.cep}}</p>
+                            {% for uni in universidade.numero %}
+                            <p>{{uni|safe}}</p>
+                            {%endfor%}
+                        </div>
+                        {%endfor%}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+<div class="row btnVoltar">
+    <form method="POST" class="post-form" action='/resultado'>
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Retornar</button>
+    </form>
+    <button type="button" class="btn btn-primary">Nova Consulta</button>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/resultado.js' %}"></script>
+{% endblock %}

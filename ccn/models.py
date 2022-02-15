@@ -171,3 +171,12 @@ class Designacao(models.Model):
 
     publ_cod=models.IntegerField(primary_key=True)
     designacao=models.CharField(max_length=100,db_column='designacao')
+
+class Relacionadas(models.Model):
+    class Meta:
+        db_table='"ccn"."publicacao_relacionada"'
+    
+    publ_cod=models.IntegerField(primary_key=True)
+    publ_cod_rel=models.IntegerField(db_column='publ_cod_rel')
+    tipo=models.CharField(max_length=100,db_column='tipo')
+

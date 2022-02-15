@@ -136,15 +136,23 @@
                     {%endif%}
                     {%endfor%}
                     {%endif%}
+                    {% for rel in relacoes %}
+                    {% if forloop.parentloop.counter == forloop.counter%}
+                    {% for r in rel %}
                     <tr class='continuacao_parcial'>
-                        <th style="width: 15%">Continuação Parcial de:</th>
-                        <td style="width: 85%"></td>
+                        <th style="width: 15%">
+                            <form method="POST" class="post-form" action="/relacao" id='formBusca'>
+                                {% csrf_token %}
+                                <input type="hidden" name="publ_cod" value="{{r.publ_cod}}">
+                                <button type="submit" class="btn btn-primary btn_continuacao">{{r.tipo}}</button>
+                            </form>
+                            
+                        </th>
+                        <td style="width: 85%">{{r.titulo}}</td>
                     </tr>
-                    <tr class='continuado_por'>
-                        <th style="width: 15%">Continuado por:</th>
-                        <td style="width: 85%"></td>
-                    </tr>
-
+                    {%endfor%}
+                    {%endif%}
+                    {%endfor%}
                     {%if lista_universidades %}
                     <tr>
                         <th style="width: 15%">Coleção</th>
@@ -156,7 +164,7 @@
                             <div id='info_adicionais'>
                                 <p><span>Sigla: </span>{{universidade.sigla}}</p>
                                 <p><span>Nome: </span>{{universidade.nome}}</p>
-                                <p><span>Endereço: </span>{{universidade.logradouro}}{{universidade.barriro}} - CEP: {{universidade.cep}}</p>
+                                <p><span>Endereço: </span>{{universidade.logradouro}} {{universidade.bairro}} - CEP: {{universidade.cep}}</p>
                                 {% for uni in universidade.numero %}
                                     <p>{{uni|safe}}</p>
                                 {%endfor%}
@@ -177,6 +185,11 @@
 
 <div class="row btnVoltar">
     <button type="button" class="btn btn-primary btnRetornar">Retornar</button>
+    <form method="POST" class="post-form" action="/relacao" id='formBusca'>
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary btnRetornar1">ir</button>
+    </form>
+    
 </div>
 {% endblock %}
 

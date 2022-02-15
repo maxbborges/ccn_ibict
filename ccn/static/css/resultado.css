@@ -67,3 +67,10 @@ tbody th {
     border: solid;
     padding: 5px;
 } */
+
+.btn_continuacao {
+    color: black;
+    background: none;
+    border: none;
+    text-decoration: underline;
+}
