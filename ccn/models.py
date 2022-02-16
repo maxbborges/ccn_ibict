@@ -79,6 +79,8 @@ class Postagens(models.Model):
                 if tipo[i]=='cod_issn':
                     textoWhere=textoWhere+f'''{tipo[i]}='{val}' {juncao[i]} '''
                 else:
+                    if '%' in val:
+                        val = val+'%' 
                     textoWhere = textoWhere+f'''contains(idx_clob,'{val} within {tipo[i]}')>0 {juncao[i]} '''
                 
                 temp=juncao[i]
