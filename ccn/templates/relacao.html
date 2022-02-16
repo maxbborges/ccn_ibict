@@ -103,6 +103,7 @@
                 </tr>
                 {%endfor%}
                 {% endif %}
+                {% if postagem.lista_universidades %}
                 <tr>
                     <th style="width: 15%">Coleção</th>
                     <td style="width: 85%">
@@ -121,6 +122,7 @@
                         {%endfor%}
                     </td>
                 </tr>
+                {% endif %}
             </tbody>
         </table>
         {% endif %}

@@ -39,6 +39,11 @@
     {% endif %}
 
 </div>
+<div class="row">
+    <div class="col">
+        <input type="checkbox" id="selecionarTodos"> <b>Selecionar TODOS os itens da página</b>
+    </div>
+</div>
 <form method="POST" class="post-form" action='/resultado'>
     {% csrf_token %}
     <div class="row">

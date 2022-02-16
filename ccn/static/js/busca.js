@@ -18,3 +18,16 @@ $('#qtdItens').change(function(){
     cache =  window.location.href
     window.location.href = window.location.href + '&qtdItens='+$('#qtdItens option:selected').text();
 })
+
+$('#selecionarTodos').click(function(){
+    checkboxs = $('input[type="checkbox"]')
+    for (i=1;i<checkboxs.length;i++){
+        if ($(checkboxs[i]).is(':checked')){
+            $(checkboxs[i]).prop('checked', false);
+        } else {
+            $(checkboxs[i]).prop('checked', true);
+        }
+        
+    }
+
+});

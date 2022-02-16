@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect,get_list_or_404, get_object_or_404
 from django.core.paginator import Paginator
 from django.http import HttpResponse
-from .models import Postagens,Universidades,Titulos,Impretas,Editoras,Localidades,Spine,Assuntos,Designacao,Relacionadas
+from .models import Postagens,Universidades,Titulos,Impretas,Editoras,Localidades,Spine,Assuntos,Designacao,Relacionadas,TermoLivre
 from django.utils import timezone
 from django.urls import reverse
 from django.db import connection
@@ -191,8 +191,6 @@ def relacao(request):
     arrayRelacoes=buscaRelacoes([publ_cod])[0]
     arrayUniversidades=montaColecao([publ_cod])
 
-    print (arrayUniversidades[0])
-
     publicacao['cod']=lista_postagens.cod
     publicacao['cod_ccn']=lista_postagens.cod_ccn
     publicacao['cod_issn']=lista_postagens.cod_issn
@@ -253,7 +251,10 @@ def montaImprenta(lista):
             editora = list(Editoras.objects.using('primary').filter(cod=codEditora))
             localidade = list(Localidades.objects.using('primary').filter(cod=localidades[i]))
             texto=texto+localidade[0].des+', '
-            texto=texto+localidade[0].pai_cod+': '
+            if (localidade[0].uf_cod != 'XX'):
+                texto=texto+localidade[0].uf_cod+': '
+            else:
+                texto=texto+localidade[0].pai_cod+': '
             texto=texto+editora[0].nome+'\n'
         
         arrayImprenta.append(texto)
@@ -266,8 +267,14 @@ def montaAssuntos(lista):
         textoSpine=''
         for spine in lista_spine:
             lista_assuntos=Assuntos.objects.using('primary').filter(cod=spine.spin_cod)
+            termo_livre=''
+            if (spine.tlv_cod!=None):
+                termo_livre = list(TermoLivre.objects.using('primary').filter(cod=spine.tlv_cod))
             for assunto in lista_assuntos:
-                textoSpine=textoSpine+assunto.des+', '
+                if (termo_livre!=''):
+                    textoSpine=textoSpine+assunto.des+' - '+termo_livre[0].des+', '
+                else:
+                    textoSpine=textoSpine+assunto.des+', '
         
         arrayAssuntos.append(textoSpine[:-2])
     return arrayAssuntos
@@ -301,8 +308,12 @@ def buscaRelacoes(lista):
     arrayRelacoes=[]
     for cod in lista:
         arrayRelacoesTemp=[]
-        relacoes = Relacionadas.objects.using('primary').filter(Q(publ_cod=cod) | Q(publ_cod_rel=cod))
-        for rel in relacoes:
+        relacoesPubl_cod = Relacionadas.objects.using('primary').filter(publ_cod=cod)
+        relacoesPubl_cod_rel = Relacionadas.objects.using('primary').filter(publ_cod_rel=cod)
+        for rel in relacoesPubl_cod:
+            novoRel = montaRelacoes(rel,cod)
+            arrayRelacoesTemp.append(novoRel)
+        for rel in relacoesPubl_cod_rel:
             novoRel = montaRelacoes(rel,cod)
             arrayRelacoesTemp.append(novoRel)
         arrayRelacoes.append(arrayRelacoesTemp)

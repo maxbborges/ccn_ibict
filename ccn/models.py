@@ -152,6 +152,7 @@ class Localidades(models.Model):
     cod=models.IntegerField(primary_key=True)
     des=models.CharField(max_length=100,db_column='des')
     pai_cod=models.CharField(max_length=100,db_column='pai_cod')
+    uf_cod=models.CharField(max_length=100,db_column='uf_cod')
 
 class Spine(models.Model):
     class Meta:
@@ -159,6 +160,7 @@ class Spine(models.Model):
 
     publ_cod=models.IntegerField(primary_key=True)
     spin_cod=models.IntegerField(db_column='spin_cod')
+    tlv_cod=models.IntegerField(db_column='tlv_cod')
 
 class Assuntos(models.Model):
     class Meta:
@@ -181,4 +183,12 @@ class Relacionadas(models.Model):
     publ_cod=models.IntegerField(primary_key=True)
     publ_cod_rel=models.IntegerField(db_column='publ_cod_rel')
     tipo=models.CharField(max_length=100,db_column='tipo')
+
+class TermoLivre(models.Model):
+    class Meta:
+        db_table='"ccn"."termo_livre"'
+    
+    cod=models.IntegerField(primary_key=True)
+    des=models.CharField(max_length=100,db_column='des')
+
 
