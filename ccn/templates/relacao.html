@@ -42,7 +42,7 @@
                 <tr>
                     <th style="width: 15%">Titulo</th>
                     {% if postagem.home_page %}
-                    <td style="width: 85%"><a href="{{postagem.home_page}}" target="_blank">{{titulos}}</a></td>
+                    <td style="width: 85%"><a href="{{postagem.home_page}}" target="_blank">{{postagem.titulo}}</a></td>
                     {% else %}
                     <td style="width: 85%">{{postagem.titulo}}</td>
                     {% endif %}
@@ -71,7 +71,7 @@
                     <th style="width: 15%">Frequência</th>
                     <td style="width: 85%">{{postagem.frequencia}}</td>
                 </tr>
-                {% if postagem.postagem.titulo_abreviado %}
+                {% if postagem.titulo_abreviado %}
                 <tr>
                     <th style="width: 15%">Título Abreviado</th>
                     <td style="width: 85%">{{postagem.titulo_abreviado}}</td>

@@ -180,6 +180,7 @@ def relacao(request):
         'relacoes':'',
         'lista_universidades':''
     }
+    
     publ_cod=request.POST.get("publ_cod")
     lista_postagens = list(Postagens.objects.using('primary').filter(cod=publ_cod))[0]
     arrayDesignacoes=montaDesignacoes([publ_cod])[0]
@@ -207,8 +208,6 @@ def relacao(request):
     publicacao['relacoes']=arrayRelacoes
     publicacao['lista_universidades']=arrayUniversidades
 
-
-    print (arrayRelacoes)
     return render(request, 'relacao.html',{
         'postagem':publicacao
     })
@@ -306,15 +305,42 @@ def montaTitulosExpandido(lista):
 
 def buscaRelacoes(lista):
     arrayRelacoes=[]
+    mapa=['A','B','C','D']
+    posicaoPubl_cod_rel=0
     for cod in lista:
         arrayRelacoesTemp=[]
-        relacoesPubl_cod = Relacionadas.objects.using('primary').filter(publ_cod=cod)
+        relacoesPubl_cod = Relacionadas.objects.using('primary').filter(publ_cod=cod).order_by('tipo','publ_cod_rel')
         relacoesPubl_cod_rel = Relacionadas.objects.using('primary').filter(publ_cod_rel=cod)
+        valid = False
         for rel in relacoesPubl_cod:
             novoRel = montaRelacoes(rel,cod)
+            if novoRel['letra'] in mapa:
+                posicaoPubl_cod_rel+=1
+
+            if novoRel['letra'] == 'E':
+                valid = True
             arrayRelacoesTemp.append(novoRel)
+
+        if valid:
+            pos=0
+            novoArray=[]
+            remover=[]
+            for i,r in enumerate(arrayRelacoesTemp):
+                if r['tipo'] != 'Formado pela fusão de':
+                    pos+=1
+                    novoArray.insert(pos,r)
+                    remover.append(i)
+            for r in reversed(remover):
+                arrayRelacoesTemp.pop(r)
+
+            arrayRelacoesTemp = novoArray+arrayRelacoesTemp
+
+
         for rel in relacoesPubl_cod_rel:
             novoRel = montaRelacoes(rel,cod)
+            if (novoRel['tipo']=='Para formar'):
+                arrayRelacoesTemp.insert(posicaoPubl_cod_rel, novoRel)
+                break
             arrayRelacoesTemp.append(novoRel)
         arrayRelacoes.append(arrayRelacoesTemp)
     return arrayRelacoes
@@ -323,7 +349,8 @@ def montaRelacoes(rel,cod):
     novoRel = {
         'titulo':'',
         'publ_cod':'',
-        'tipo':rel.tipo
+        'tipo':'',
+        'letra':rel.tipo
     }
 
     if (rel.publ_cod == int(cod)):
