@@ -105,16 +105,20 @@
                     <th style="width: 15%">Coleção</th>
                     <td style="width: 85%">
                         {% for universidade in postagem.lista_universidades %}
-                        <div id='universidades'><span id='sigla'>{{universidade.sigla}}</span><span id='des'>
-                                ({{universidade.uf_cod}})</span>: {{universidade.conteudo}}</div>
-                        <div id='info_adicionais'>
-                            <p><span>Sigla: </span>{{universidade.sigla}}</p>
-                            <p><span>Nome: </span>{{universidade.nome}}</p>
-                            <p><span>Endereço: </span>{{universidade.logradouro}}{{universidade.bairro}} - CEP:
-                                {{universidade.cep}}</p>
-                            {% for uni in universidade.numero %}
-                            <p>{{uni|safe}}</p>
-                            {%endfor%}
+                        <div class="universidade_margin">
+                            <div class="universidade_hover">
+                                <div id='universidades'><span id='sigla'>{{universidade.sigla}}</span><span id='des'>
+                                        ({{universidade.uf_cod}})</span>: {{universidade.conteudo}}</div>
+                                <div id='info_adicionais'>
+                                    <p><span>Sigla: </span>{{universidade.sigla}}</p>
+                                    <p><span>Nome: </span>{{universidade.nome}}</p>
+                                    <p><span>Endereço: </span>{{universidade.logradouro}}{{universidade.bairro}} - CEP:
+                                        {{universidade.cep}}</p>
+                                    {% for uni in universidade.numero %}
+                                    <p>{{uni|safe}}</p>
+                                    {%endfor%}
+                                </div>
+                            </div>
                         </div>
                         {%endfor%}
                     </td>
@@ -128,7 +132,7 @@
 <div class="row btns" style="text-align: center;">
     <div class="col">
         <form method="POST" class="post-form" action='/resultado'>
-        {% csrf_token %}
+            {% csrf_token %}
             <button type="submit" class="btn btn-primary">Retornar</button>
         </form>
     </div>

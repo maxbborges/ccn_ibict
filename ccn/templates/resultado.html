@@ -47,15 +47,15 @@
                     {% for titulos in lista_titulos %}
                     {% if forloop.parentloop.counter == forloop.counter%}
                     {% if postagem.home_page %}
-                        <td style="width: 85%"><a href="{{postagem.home_page}}" target="_blank">{{titulos}}</a></td>
+                    <td style="width: 85%"><a href="{{postagem.home_page}}" target="_blank">{{titulos}}</a></td>
                     {% else %}
-                        <td style="width: 85%">{{titulos}}</td>
+                    <td style="width: 85%">{{titulos}}</td>
                     {% endif %}
-                    
-                    
+
+
                     {% endif %}
-                    
-                    
+
+
                     <!-- {% ifequal titulos.codigo postagem.codigo %}
                     {% if postagem.home_page %}
                     <td style="width: 85%"><a href={{postagem.home_page}}>{{titulos.titulo_completo}}</a></td>
@@ -80,100 +80,106 @@
                     {% if forloop.parentloop.counter == forloop.counter%}
                     <th style="width: 15%">Imprenta</th>
                     <td style="width: 85%" class='imprenta'>
-                        
+
                         <p>{{imprenta| linebreaksbr}}</p>
-                        
+
                     </td>
                     {% endif %}
                     {%endfor%}
                 </tr>
-                    {% if formatoConsulta != 'Simples' %}
-                    {% if assuntos %}
-                    <tr>
-                        {% for assunto in assuntos %}
-                        {% if forloop.parentloop.counter == forloop.counter%}
-                        <th style="width: 15%">Assunto</th>
-                        <td style="width: 85%">
-                            {{assunto | linebreaksbr}}
-                        </td>
-                        {% endif %}
-                        {%endfor%}
-                    </tr>
-                    {%endif%}
-                    <tr>
-                        <th style="width: 15%">Frequência</th>
-                        <td style="width: 85%">{{postagem.frequencia}}</td>
-                    </tr> 
-                    {% if postagem.titulo_abreviado %}
-                    {% if postagem.titulo_abreviado != "Sum. publ. period. port." %}
-                    <tr>
-                        <th style="width: 15%">Título Abreviado</th>
-                        <td style="width: 85%">{{postagem.titulo_abreviado}}</td>
-                    </tr>
-                    {%endif%}
-                    {%endif%}
-                    {% if titulos_expandidos %} 
-                    {% for te in titulos_expandidos %}
+                {% if formatoConsulta != 'Simples' %}
+                {% if assuntos %}
+                <tr>
+                    {% for assunto in assuntos %}
                     {% if forloop.parentloop.counter == forloop.counter%}
-                    {% if te != '' %}
-                    <tr>
-                        <th style="width: 15%">Título Expandido</th>
-                        <td style="width: 85%">{{te| linebreaksbr}}</td>
-                    </tr>
-                    {%endif%}
-                    {%endif%}
+                    <th style="width: 15%">Assunto</th>
+                    <td style="width: 85%">
+                        {{assunto | linebreaksbr}}
+                    </td>
+                    {% endif %}
                     {%endfor%}
-                    {%endif%}
-                    {% if titulos_adicionais %} 
-                    {% for ta in titulos_adicionais %}
-                    {% if forloop.parentloop.counter == forloop.counter%}
-                    {% if ta != '' %}
-                    <tr>
-                        <th style="width: 15%">Título Adicional</th>
-                        <td style="width: 85%">{{ta| linebreaksbr}}</td>
-                    </tr> 
-                    {%endif%}
-                    {%endif%}
-                    {%endfor%}
-                    {%endif%}
-                    {% for rel in relacoes %}
-                    {% if forloop.parentloop.counter == forloop.counter%}
-                    {% for r in rel %}
-                    <tr class='continuacao_parcial'>
-                        <th style="width: 15%">
-                            <form method="POST" class="post-form" action="/relacao" id='formBusca'>
-                                {% csrf_token %}
-                                <input type="hidden" name="publ_cod" value="{{r.publ_cod}}">
-                                <button type="submit" class="btn btn-primary btn_continuacao">{{r.tipo}}</button>
-                            </form>
-                            
-                        </th>
-                        <td style="width: 85%">{{r.titulo}}</td>
-                    </tr>
-                    {%endfor%}
-                    {%endif%}
-                    {%endfor%}
-                    {%if lista_universidades %}
-                    <tr>
-                        <th style="width: 15%">Coleção</th>
-                        <td style="width: 85%">
+                </tr>
+                {%endif%}
+                <tr>
+                    <th style="width: 15%">Frequência</th>
+                    <td style="width: 85%">{{postagem.frequencia}}</td>
+                </tr>
+                {% if postagem.titulo_abreviado %}
+                {% if postagem.titulo_abreviado != "Sum. publ. period. port." %}
+                <tr>
+                    <th style="width: 15%">Título Abreviado</th>
+                    <td style="width: 85%">{{postagem.titulo_abreviado}}</td>
+                </tr>
+                {%endif%}
+                {%endif%}
+                {% if titulos_expandidos %}
+                {% for te in titulos_expandidos %}
+                {% if forloop.parentloop.counter == forloop.counter%}
+                {% if te != '' %}
+                <tr>
+                    <th style="width: 15%">Título Expandido</th>
+                    <td style="width: 85%">{{te| linebreaksbr}}</td>
+                </tr>
+                {%endif%}
+                {%endif%}
+                {%endfor%}
+                {%endif%}
+                {% if titulos_adicionais %}
+                {% for ta in titulos_adicionais %}
+                {% if forloop.parentloop.counter == forloop.counter%}
+                {% if ta != '' %}
+                <tr>
+                    <th style="width: 15%">Título Adicional</th>
+                    <td style="width: 85%">{{ta| linebreaksbr}}</td>
+                </tr>
+                {%endif%}
+                {%endif%}
+                {%endfor%}
+                {%endif%}
+                {% for rel in relacoes %}
+                {% if forloop.parentloop.counter == forloop.counter%}
+                {% for r in rel %}
+                <tr class='continuacao_parcial'>
+                    <th style="width: 15%">
+                        <form method="POST" class="post-form" action="/relacao" id='formBusca'>
+                            {% csrf_token %}
+                            <input type="hidden" name="publ_cod" value="{{r.publ_cod}}">
+                            <button type="submit" class="btn btn-primary btn_continuacao">{{r.tipo}}</button>
+                        </form>
+
+                    </th>
+                    <td style="width: 85%">{{r.titulo}}</td>
+                </tr>
+                {%endfor%}
+                {%endif%}
+                {%endfor%}
+                {%if lista_universidades %}
+                <tr>
+                    <th style="width: 15%">Coleção</th>
+                    <td style="width: 85%">
                         {% for universidade in lista_universidades %}
 
-                            {% if universidade.publ_cod == postagem.cod %}
-                            <div id='universidades'><span id='sigla'>{{universidade.sigla}}</span><span id='des'> ({{universidade.uf_cod}})</span>: {{universidade.conteudo}}</div>
-                            <div id='info_adicionais'>
-                                <p><span>Sigla: </span>{{universidade.sigla}}</p>
-                                <p><span>Nome: </span>{{universidade.nome}}</p>
-                                <p><span>Endereço: </span>{{universidade.logradouro}} {{universidade.bairro}} - CEP: {{universidade.cep}}</p>
-                                {% for uni in universidade.numero %}
+                        {% if universidade.publ_cod == postagem.cod %}
+                        <div class="universidade_margin">
+                            <div class="universidade_hover">
+                                <div id='universidades'><span id='sigla'>{{universidade.sigla}}</span><span id='des'>
+                                        ({{universidade.uf_cod}})</span>: {{universidade.conteudo}}</div>
+                                <div id='info_adicionais'>
+                                    <p><span>Sigla: </span>{{universidade.sigla}}</p>
+                                    <p><span>Nome: </span>{{universidade.nome}}</p>
+                                    <p><span>Endereço: </span>{{universidade.logradouro}} {{universidade.bairro}} - CEP:
+                                        {{universidade.cep}}</p>
+                                    {% for uni in universidade.numero %}
                                     <p>{{uni|safe}}</p>
-                                {%endfor%}
+                                    {%endfor%}
+                                </div>
                             </div>
-                            {%endif%}
+                        </div>
+                        {%endif%}
                         {%endfor%}
-                        </td>
-                    </tr>
-                    
+                    </td>
+                </tr>
+
                 {%endif%}
                 {%endif%}
             </tbody>

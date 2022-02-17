@@ -62,15 +62,18 @@ tbody th {
     font-weight: bolder;
 }
 
-/* #universidades:hover + #info_adicionais {
-    display: block !important;
-    border: solid;
-    padding: 5px;
-} */
-
 .btn_continuacao {
     color: black;
     background: none;
     border: none;
     text-decoration: underline;
 }
+
+#info_adicionais{
+    display: none;
+    padding: 0px 0px 20px 20px;
+}
+
+.universidade_margin {
+    margin: 5px 5px 20px 0px;
+} 
