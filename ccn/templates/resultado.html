@@ -21,7 +21,7 @@
             <thead>
                 <tr>
                     <th colspan="2" class='codigo'>
-                        <p>consulta: {{postagem.cod}}</p>
+                        <p>CCN</p>
                     </th>
                 </tr>
             </thead>
@@ -184,12 +184,7 @@
 </div>
 
 <div class="row btnVoltar">
-    <button type="button" class="btn btn-primary btnRetornar">Retornar</button>
-    <form method="POST" class="post-form" action="/relacao" id='formBusca'>
-        {% csrf_token %}
-        <button type="submit" class="btn btn-primary btnRetornar1">ir</button>
-    </form>
-    
+    <button type="button" class="btn btn-primary btnRetornar">Nova Consulta</button>
 </div>
 {% endblock %}
 

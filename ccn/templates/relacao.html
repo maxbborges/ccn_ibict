@@ -18,11 +18,6 @@
         {% if postagem %}
         <table class="table table-bordered table-sm">
             <thead>
-                <tr>
-                    <th colspan="2" class='codigo'>
-                        <p>consulta: {{postagem.cod}}</p>
-                    </th>
-                </tr>
             </thead>
             <tbody>
                 <tr>
@@ -130,12 +125,16 @@
         {% endif %}
     </div>
 </div>
-<div class="row btnVoltar">
-    <form method="POST" class="post-form" action='/resultado'>
+<div class="row btns" style="text-align: center;">
+    <div class="col">
+        <form method="POST" class="post-form" action='/resultado'>
         {% csrf_token %}
-        <button type="submit" class="btn btn-primary">Retornar</button>
-    </form>
-    <button type="button" class="btn btn-primary">Nova Consulta</button>
+            <button type="submit" class="btn btn-primary">Retornar</button>
+        </form>
+    </div>
+    <div class="col">
+        <button type="button" class="btn btn-primary btnRetornar">Nova Consulta</button>
+    </div>
 </div>
 {% endblock %}
 
@@ -143,5 +142,5 @@
 {% endblock %}
 
 {% block script %}
-<script src="{% static 'js/resultado.js' %}"></script>
+<script src="{% static 'js/relacao.js' %}"></script>
 {% endblock %}

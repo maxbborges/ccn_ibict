@@ -24,6 +24,34 @@
                     <p>Clique nas opções abaixo</p>
                 </div>
                 <div class="row">
+                    <!-- <div class="col">
+                        <select class="input-group-text selectpicker slc-chave-tipo" name='tipo' id="id_tipo">
+                            {% if campos %}
+                            {% for key,value in campos.items %}
+                            <option value='{{value}}' {% if forloop.first %}selected{% endif %}>{{key}}</option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <input type="text" class="input-group form-control ipt-valor"
+                                    aria-label="Text input with dropdown button" name='valor' required>
+                    </div>
+                    <div class="col">
+                        <select class="input-group-text selectpicker slc-chave-juncao" name='juncao'>
+                            <option selected>AND</option>
+                            <option>OR</option>
+                            <option>AND NOT</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary btnajuda"
+                        onclick="ajuda($(this))">?</button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary btnRemover"
+                                        onclick="removerDiv($(this))">-</button>
+                    </div> -->
                     <div class="col">
                         <div class="input-group mb-2 mt-2">
                             <div class="input-group mb-3">
@@ -44,6 +72,10 @@
                                         <option>OR</option>
                                         <option>AND NOT</option>
                                     </select>
+                                </span>
+                                <span class='btnAjuda'>
+                                    <button type="button" class="btn btn-primary btnAjuda"
+                                        onclick="ajuda($(this))" name="teste">?</button>
                                 </span>
                                 <span class='spanRemover'>
                                     <button type="button" class="btn btn-primary btnRemover"
