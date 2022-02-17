@@ -52,6 +52,8 @@ class Postagens(models.Model):
             return 'Quinzenal'
         if self._frequencia == 'G':
             return 'Bienal'
+        if self._frequencia == 'F':
+            return 'Semestral'
 		
         return self._frequencia
     

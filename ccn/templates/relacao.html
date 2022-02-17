@@ -29,10 +29,12 @@
                     <th style="width: 15%">CCN</th>
                     <td style="width: 85%">{{postagem.cod_ccn}}</td>
                 </tr>
+                {% if postagem.cod_issn %}
                 <tr>
                     <th style="width: 15%">ISSN Impresso</th>
                     <td style="width: 85%">{{postagem.cod_issn}}</td>
                 </tr>
+                {% if postagem.cod_issn %}
                 {% if postagem.cod_issn_online %}
                 <tr>
                     <th style="width: 15%">ISSN On-line</th>
