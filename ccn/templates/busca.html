@@ -15,7 +15,10 @@
 <div class='row'>
     {% if postagens %}
     <div class="col">
-        <select class="input-group-text selectpicker" id='qtdItens'>
+        <label class="d-inline-block" for="from_year">
+           Quantidade: 
+        </label>
+        <select class="input-group-text selectpicker d-inline-block" id='qtdItens'>
             {% for item in itens %}
                 {% if item == request.session.qtdItens %}
                     <option selected>{{item}}</option>
@@ -30,15 +33,10 @@
     <div class="col">
         Exibindo {{qtdPostagensPagina}} resultados de {{qtdPostagensBanco}}
     </div>
-    
-    <div class="col">
-        <nav aria-label="Page navigation">
-            {% include 'paginador.html' with pname=a page_obj=postagens %}
-        </nav>
-    </div>
     {% endif %}
 
 </div>
+<hr/>
 <div class="row">
     <div class="col">
         <input type="checkbox" id="selecionarTodos"> <b>Selecionar TODOS os itens da página</b>
@@ -74,25 +72,32 @@
             
         </div>
     </div>
+    <hr/>
     <div class="row">
         <div class="col">
             {% if postagens %}
-            <select class="input-group-text selectpicker" name='formatoConsulta'>
+            <label class="d-inline-block" for="from_year">
+                Formato: 
+             </label>
+            <select class="input-group-text selectpicker d-inline-block" name='formatoConsulta'>
                 <option title="Combo 1" selected>Detalhado</option>
                 <option title="Combo 2">Completo</option>
                 <option title="Combo 3">Simples</option>
             </select>
             {% endif %}
         </div>
-        
         <div class="col">
             {% if postagens %}
             <button type="submit" class="btn btn-primary visualizarRegistros">Visualizar Registros</button>
             {% endif %}
         </div>
-        
         <div class="col">
             <button type="button" class="btn btn-primary novaConsulta">Nova Consulta</button>
+        </div>
+        <div class="col">
+            <nav aria-label="Page navigation">
+                {% include 'paginador.html' with pname=a page_obj=postagens %}
+            </nav>
         </div>
     </div>
 </form>

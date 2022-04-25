@@ -13,7 +13,7 @@ def index(request):
     camposConsulta ={
        'Título':'tituloproprio',
        'Assunto':'assunto',
-       'País de publicação':'pais',
+       'País de publicação':'pai_cod',
        'Idioma do texto':'idioma',
        'Código CCN':'codccn',
        'Número ISSN':'cod_issn',
@@ -27,11 +27,10 @@ def index(request):
 def busca(request):
     numeroDeItens={
         '10':'10',
+        '15':'15',
         '20':'20',
-        '30':'30',
-        '40':'40',
-        '50':'50',
-        '60':'60'
+        '25':'25',
+        '30':'30'
     }
     
     if(request.GET.get('qtdItens')):

@@ -3,7 +3,7 @@ $('.btnRetornar').click(function(){
 })
 
 $( document ).ready(function() {
-    $( ".universidade_hover" ).hover(function() {
+    $( ".universidade_hover" ).click(function() {
         var info = $($(window.event.target).parents()[1]).find('#info_adicionais')
         if ($(info).css("display")=='block'){
             $(info).css("display","none")

@@ -7,3 +7,9 @@ main {
     font-size: 30px;
     margin: 30px;
 }
+
+hr {
+    margin-top: 4px;
+    background: darkgrey;
+    height: 5px;
+}
