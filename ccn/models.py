@@ -1,9 +1,10 @@
 from django.db import models
+from django.db.models.functions import Lower
 
 class Postagens(models.Model):
     class Meta:
         db_table='"ccn"."publicacao"'
-        ordering = ['tit_proprio','cod']
+        ordering = [Lower('tit_proprio'),'cod']
 
     cod = models.IntegerField(primary_key=True) #cod
     pais = models.CharField(max_length=100,db_column='pai_cod') #pai_cod
@@ -89,7 +90,7 @@ class Postagens(models.Model):
         textoWhere=textoWhere[:-(len(temp)+1)]
         
 
-        consulta = consulta+textoWhere+'ORDER by tit_proprio,cod'
+        consulta = consulta+textoWhere+'ORDER by lower(tit_proprio),cod'
         return consulta
 
 class Titulos(models.Model):

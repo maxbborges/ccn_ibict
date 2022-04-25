@@ -62,9 +62,9 @@ def busca(request):
     qtdPostagensBanco = len(list(lista))
 
     if (page=='1' or not page):
-        arrayTitulos=montaTitulos(listaCodPublicacoes[0:qtdPostagensPagina-1])
+        arrayTitulos=montaTitulos(listaCodPublicacoes[0:qtdPostagensPagina])
     else:
-        arrayTitulos=montaTitulos(listaCodPublicacoes[qtdPostagensPagina*(int(page)-1):(qtdPostagensPagina*int(page))-1])
+        arrayTitulos=montaTitulos(listaCodPublicacoes[qtdPostagensPagina*(int(page)-1):(qtdPostagensPagina*int(page))])
 
     if (qtdPostagensPagina>qtdPostagensBanco):
         qtdPostagensPagina = qtdPostagensBanco
