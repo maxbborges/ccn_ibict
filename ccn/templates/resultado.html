@@ -13,6 +13,8 @@
 {% endblock %}
 
 {% block main %}
+<div><span style="color:red;">*</span> - Fornece cópia via COMUT</div>
+<div><span style="color:green;">*</span> - Fornece cópia por meio eletrônico (via Ariel)</div>
 <div class='row linhaTabela'>
     <div class='col'>
         {% if lista_postagens %}
@@ -55,14 +57,6 @@
 
                     {% endif %}
 
-
-                    <!-- {% ifequal titulos.codigo postagem.codigo %}
-                    {% if postagem.home_page %}
-                    <td style="width: 85%"><a href={{postagem.home_page}}>{{titulos.titulo_completo}}</a></td>
-                    {% else %}
-                    <td style="width: 85%">{{titulos.titulo_completo}}</td>
-                    {% endif %}
-                    {% endifequal %} -->
                     {%endfor%}
                 </tr>
                 <tr>
@@ -162,8 +156,20 @@
                         {% if universidade.publ_cod == postagem.cod %}
                         <div class="universidade_margin">
                             <div class="universidade_hover">
-                                <div id='universidades'><span id='sigla'>{{universidade.sigla}}</span><span id='des'>
-                                        ({{universidade.uf_cod}})</span>: {{universidade.conteudo}}</div>
+                                <div id='universidades'>
+                                    {% if universidade.cod_comut != None %}
+                                    <span style="color:red;">*</span>
+                                    {%endif%}
+                                    {% if universidade.ariel != None %}
+                                    <span style="color:green;">*</span>
+                                    {%endif%}
+                                    <span id='sigla'>{{universidade.sigla}}</span>
+                                    <span id='des'>({{universidade.uf_cod}})</span>
+                                    {% if universidade.tipotexto != 'Texto Impresso' %}
+                                    <span style="color: red;">[{{universidade.tipotexto}}]</span>
+                                    {%endif%}
+                                    :{{universidade.conteudo}}
+                                </div>
                                 <div id='info_adicionais'>
                                     <p><span>Sigla: </span>{{universidade.sigla}}</p>
                                     <p><span>Nome: </span>{{universidade.nome}}</p>
