@@ -157,10 +157,10 @@
                         <div class="universidade_margin">
                             <div class="universidade_hover">
                                 <div id='universidades'>
-                                    {% if universidade.cod_comut != None %}
+                                    {% if universidade.base == 'S' %}
                                     <span style="color:red;">*</span>
                                     {%endif%}
-                                    {% if universidade.ariel != None %}
+                                    {% if universidade.ariel == 'S' %}
                                     <span style="color:green;">*</span>
                                     {%endif%}
                                     <span id='sigla'>{{universidade.sigla}}</span>
