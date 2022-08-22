@@ -128,7 +128,7 @@ class Universidades(models.Model):
         consulta = f'''
         SELECT DISTINCT
         pc.PUBL_COD, bc.BIBL_COD, pc.SEQ , l.UF_COD, b.SIGLA, b.NOME, b.LOGRADOURO,
-        b.BAIRRO, l.DES, b.CEP, bc.NUMERO, bc.TIPO , pc.CONTEUDO,mf.DES AS tipotexto,b.cod_comut,b.ariel
+        b.BAIRRO, l.DES, b.CEP, bc.NUMERO, bc.TIPO , pc.CONTEUDO,mf.DES AS tipotexto,b.base,b.ariel
         FROM ccn.PUBLICACAO_COLECAO pc
         INNER JOIN ccn.BIBLIOTECA b ON b.COD = pc.BIBL_COD
         INNER JOIN ccn.BIBLIOTECA_CONTATO bc ON pc.BIBL_COD = bc.BIBL_COD
